@@ -319,7 +319,7 @@ SPECIAL_CHARACTER = {
         "id": "4e8f4bef41254539a28e072c1e85d9a2",
         "metadata": {
                 "language": "eng",
-                "title": "Relationship between maxillary central incisor proportions and\u00a0facial proportions.".decode("unicode_escape"),
+                "title": "Relationship between maxillary central incisor proportions and\\u00a0facial proportions.".decode("unicode_escape"),
                 "author": [{
                         "affiliation": "Senior Specialty Registrar, Orthodontics, Guy's Hospital, London, UK.",
                         "identifier": [{

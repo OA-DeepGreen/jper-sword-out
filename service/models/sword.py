@@ -42,7 +42,7 @@ class RepositoryStatus(dataobj.DataObj, dao.RepositoryStatusDAO):
                 "created_date" : {"coerce" : "utcdatetime"},
 
                 "last_deposit_date" : {"coerce" : "utcdatetime"},
-                "status" : {"coerce" : "unicode", "allowed_values" : [u"succeeding", u"failing", u"problem"]},
+                "status" : {"coerce" : "unicode", "allowed_values" : ["succeeding", "failing", "problem"]},
                 "retries" : {"coerce" : "integer"},
                 "last_tried" : {"coerce" : "utcdatetime"}
             }
@@ -85,7 +85,7 @@ class RepositoryStatus(dataobj.DataObj, dao.RepositoryStatusDAO):
 
         :param val: current status, must be one of succeeding, problem, failing
         """
-        self._set_single("status", val, coerce=dataobj.to_unicode(), allowed_values=[u"succeeding", u"problem", u"failing"])
+        self._set_single("status", val, coerce=dataobj.to_unicode(), allowed_values=["succeeding", "problem", "failing"])
 
     @property
     def retries(self):
@@ -242,9 +242,9 @@ class DepositRecord(dataobj.DataObj, dao.DepositRecordDAO):
                 #                 fixed from v4.7.x onwards)
                 # 2020-01-13 TD : ... and yet the allowed_value : "payloadtoolarge"
                 # "metadata_status" : {"coerce" : "unicode", "allowed_values" : [u"deposited", u"failed"]},
-                "metadata_status" : {"coerce" : "unicode", "allowed_values" : [u"deposited", u"failed", u"invalidxml", u"payloadtoolarge"]},
-                "content_status" : {"coerce" : "unicode", "allowed_values" : [u"deposited", u"failed", u"none"]},
-                "completed_status" : {"coerce" : "unicode", "allowed_values" : [u"deposited", u"failed", u"none"]},
+                "metadata_status" : {"coerce" : "unicode", "allowed_values" : ["deposited", "failed", "invalidxml", "payloadtoolarge"]},
+                "content_status" : {"coerce" : "unicode", "allowed_values" : ["deposited", "failed", "none"]},
+                "completed_status" : {"coerce" : "unicode", "allowed_values" : ["deposited", "failed", "none"]},
             }
         }
 
@@ -367,7 +367,7 @@ class DepositRecord(dataobj.DataObj, dao.DepositRecordDAO):
         :return:
         """
         #self._set_single("metadata_status", val, coerce=dataobj.to_unicode(), allowed_values=[u"deposited", u"failed"])
-        self._set_single("metadata_status", val, coerce=dataobj.to_unicode(), allowed_values=[u"deposited", u"failed", u"invalidxml", u"payloadtoolarge"])
+        self._set_single("metadata_status", val, coerce=dataobj.to_unicode(), allowed_values=["deposited", "failed", "invalidxml", "payloadtoolarge"])
 
     @property
     def content_status(self):
@@ -386,7 +386,7 @@ class DepositRecord(dataobj.DataObj, dao.DepositRecordDAO):
         :param val: content deposit status
         :return:
         """
-        self._set_single("content_status", val, coerce=dataobj.to_unicode(), allowed_values=[u"deposited", u"none", u"failed"])
+        self._set_single("content_status", val, coerce=dataobj.to_unicode(), allowed_values=["deposited", "none", "failed"])
 
     @property
     def completed_status(self):
@@ -405,7 +405,7 @@ class DepositRecord(dataobj.DataObj, dao.DepositRecordDAO):
         :param val: completed request status
         :return:
         """
-        self._set_single("completed_status", val, coerce=dataobj.to_unicode(), allowed_values=[u"deposited", u"none", u"failed"])
+        self._set_single("completed_status", val, coerce=dataobj.to_unicode(), allowed_values=["deposited", "none", "failed"])
 
     def was_successful(self):
         """

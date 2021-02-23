@@ -7,12 +7,12 @@ from unittest import TestCase
 from octopus.lib import http
 from octopus.modules.jper import client, models
 from service.tests import fixtures
-import urlparse, json
-from StringIO import StringIO
+import urllib.parse, json
+from io import StringIO
 
 def mock_list(url, *args, **kwargs):
-    parsed = urlparse.urlparse(url)
-    params = urlparse.parse_qs(parsed.query)
+    parsed = urllib.parse.urlparse(url)
+    params = urllib.parse.parse_qs(parsed.query)
 
     if params["since"][0] == "1970-01-01T00:00:00Z":
         nl = fixtures.NotificationFactory.notification_list(params["since"][0], pageSize=2, count=2)
@@ -30,7 +30,7 @@ def mock_list(url, *args, **kwargs):
         return http.MockResponse(400, json.dumps(err))
 
 def mock_get_content(url, *args, **kwargs):
-    parsed = urlparse.urlparse(url)
+    parsed = urllib.parse.urlparse(url)
 
     if parsed.path.endswith("/content"):
         return http.MockResponse(200, "default content"), "", 0
@@ -45,8 +45,8 @@ def mock_get_content(url, *args, **kwargs):
         return http.MockResponse(400, json.dumps(err)), "", 0
 
 def mock_iterate(url, *args, **kwargs):
-    parsed = urlparse.urlparse(url)
-    params = urlparse.parse_qs(parsed.query)
+    parsed = urllib.parse.urlparse(url)
+    params = urllib.parse.parse_qs(parsed.query)
 
     if params["page"][0] == "1":
         nl = fixtures.NotificationFactory.notification_list(params["since"][0], page=int(params["page"][0]), pageSize=2, count=4, ids=["1111", "2222"])
@@ -114,13 +114,13 @@ class TestModels(TestCase):
         url = "http://localhost:5024/notification/12345/content"
         gen, headers = c.get_content(url)
         assert hasattr(gen, "next")
-        assert gen.next() == "default content"
+        assert next(gen) == "default content"
 
         # try a specific content url
         url = "http://localhost:5024/notification/12345/content/SimpleZip"
         gen, headers = c.get_content(url)
         assert hasattr(gen, "next")
-        assert gen.next() == "simplezip"
+        assert next(gen) == "simplezip"
 
         # check a failed http request
         with self.assertRaises(client.JPERConnectionException):

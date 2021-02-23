@@ -10,8 +10,8 @@ from octopus.modules.store import store
 from service.tests import fixtures
 from octopus.lib import dates, http
 from octopus.modules.swordv2 import client_http
-import time, sword2, urlparse, json, os, zipfile
-from StringIO import StringIO
+import time, sword2, urllib.parse, json, os, zipfile
+from io import StringIO
 from octopus.core import app
 
 

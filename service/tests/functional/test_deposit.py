@@ -29,8 +29,8 @@ from octopus.modules.jper import models as jper
 from octopus.modules.store import store
 from octopus.core import app
 from lxml import etree
-import urlparse, json, time
-from StringIO import StringIO
+import urllib.parse, json, time
+from io import StringIO
 from octopus.lib import http, dates, paths
 
 # NOTE: you need to be running a SWORD server for these tests to operate.
@@ -368,8 +368,8 @@ class TestDeposit(ESTestCase):
         # now make some notifications to be returned over http
         # defining this mock here for convenience during development
         def mock_get_list_intercept(url, *args, **kwargs):
-            parsed = urlparse.urlparse(url)
-            params = urlparse.parse_qs(parsed.query)
+            parsed = urllib.parse.urlparse(url)
+            params = urllib.parse.parse_qs(parsed.query)
 
             # if this is a request to list routed notifications we need to intercept and return the
             # mock response
