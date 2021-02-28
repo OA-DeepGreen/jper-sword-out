@@ -2,7 +2,7 @@
 Tests on the repository activation/deactivation functions
 """
 
-from octopus.modules.es.testindex import ESTestCase
+from standalone_octopus.modules.es.testindex import ESTestCase
 from service import control, models
 import time
 

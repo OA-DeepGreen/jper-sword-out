@@ -3,7 +3,7 @@ Fixtures for testing notifications
 """
 
 from copy import deepcopy
-from octopus.lib import dates, paths
+from standalone_octopus.lib import dates, paths
 import os
 
 RESOURCES = paths.rel2abs(__file__, "..", "resources")

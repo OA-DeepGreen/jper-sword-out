@@ -2,10 +2,10 @@
 Tests on the models
 """
 
-from octopus.modules.es.testindex import ESTestCase
+from standalone_octopus.modules.es.testindex import ESTestCase
 from service import models
 from service.tests import fixtures
-from octopus.lib import dataobj, dates
+from standalone_octopus.lib import dataobj, dates
 import time
 
 class TestModels(ESTestCase):

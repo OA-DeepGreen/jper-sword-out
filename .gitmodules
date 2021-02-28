@@ -2,10 +2,6 @@
 	path = esprit
 	url = git@github.com:OA-DeepGreen/esprit.git
 	branch = master
-[submodule "magnificent-octopus"]
-	path = magnificent-octopus
-	url = git@github.com:OA-DeepGreen/magnificent-octopus.git
-	branch = master
 [submodule "python-client-sword2"]
 	path = python-client-sword2
 	url = git@github.com:OA-DeepGreen/python-client-sword2.git

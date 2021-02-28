@@ -4,7 +4,7 @@ Main script which executes the run cycle.
 It will start and remain running until it is shut-down externally, and will execute the deposit.run method
 repeatedly.
 """
-from octopus.core import app, initialise, add_configuration
+from standalone_octopus.core import app, initialise, add_configuration
 import logging
 from logging import Formatter
 from logging.handlers import RotatingFileHandler

@@ -66,7 +66,7 @@ STORE_IMPL = "octopus.modules.store.store.StoreLocal"
 STORE_TMP_IMPL = "octopus.modules.store.store.TempStore"
 """implementation class of the temporary local filestore"""
 
-from octopus.lib import paths
+from standalone_octopus.lib import paths
 STORE_LOCAL_DIR = paths.rel2abs(__file__, "..", "service", "tests", "local_store", "live")
 """path to local directory for local file store - specified relative to this file"""
 

@@ -2,12 +2,10 @@
 Model objects used to represent data from the JPER account system
 """
 
-from flask.ext.login import UserMixin
-from werkzeug import generate_password_hash, check_password_hash
+from flask_login import UserMixin
 
-from octopus.core import app
 from service import dao
-from octopus.lib import dataobj
+from standalone_octopus.lib import dataobj
 
 class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
     """
