@@ -1,8 +1,8 @@
 [submodule "esprit"]
 	path = esprit
 	url = git@github.com:OA-DeepGreen/esprit.git
-	branch = master
+	branch = python3
 [submodule "python-client-sword2"]
 	path = python-client-sword2
 	url = git@github.com:OA-DeepGreen/python-client-sword2.git
-	branch = master
+	branch = python3
