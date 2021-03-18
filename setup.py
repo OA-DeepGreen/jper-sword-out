@@ -2,11 +2,11 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'jper-sword-out',
-    version = '1.0.0',
+    version = '1.0.0-p3',
     packages = find_packages(),
     install_requires = [
         "esprit",
-        "Flask",
+        "Flask==1.1.2",
         "sword2"
     ],
     url = 'http://cottagelabs.com/',
