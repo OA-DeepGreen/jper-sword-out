@@ -6,3 +6,6 @@
 	path = python-client-sword2
 	url = git@github.com:OA-DeepGreen/python-client-sword2.git
 	branch = python3
+[submodule "magnificent-octopus"]
+	path = magnificent-octopus
+	url = git@github.com:OA-DeepGreen/magnificent-octopus

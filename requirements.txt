@@ -5,5 +5,8 @@
 -e git+https://github.com/OA-DeepGreen/esprit.git@603e8c285bb76217d8e7716f9fd8e1bc24adb8fd#egg=esprit
 -e git+https://github.com/OA-DeepGreen/python-client-sword2.git@1dbf885cadf035d87bee814af5a3efbc8a78d81b#egg=sword2
 
+# install octopus (initialise the submodule first)
+-e magnificent-octopus
+
 # now run the normal setup.py and get all the normal PyPI dependencies from there
 -e .

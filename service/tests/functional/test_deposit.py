@@ -21,15 +21,15 @@ Here, the only thing you would need to customise is the COL, to point to a colle
 exists in SSS.
 
 """
-from standalone_octopus.modules.es.testindex import ESTestCase
+from octopus.modules.es.testindex import ESTestCase
 from service import deposit, models
 from service.tests import fixtures
-from standalone_octopus.modules.jper import models as jper
-from standalone_octopus.modules.store import store
-from standalone_octopus.core import app
+from octopus.modules.jper import models as jper
+from octopus.modules.store import store
+from octopus.core import app
 from lxml import etree
 import urllib.parse, json, time
-from standalone_octopus.lib import http, dates, paths
+from octopus.lib import http, dates, paths
 
 # NOTE: you need to be running a SWORD server for these tests to operate.
 # Recommend just starting an instance of SSS, then picking a collection

@@ -7,7 +7,7 @@ from unittest import TestCase
 from service.tests import fixtures
 import sword2
 from service import xwalk
-from standalone_octopus.modules.jper import models
+from octopus.modules.jper import models
 
 TERMS = "http://purl.org/dc/terms/"
 DC = "http://purl.org/dc/elements/"

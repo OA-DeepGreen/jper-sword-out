@@ -7,7 +7,7 @@ so these DAOs mostly just provide information on where to persist the data, and 
 query methods as required
 """
 
-from standalone_octopus.modules.es import dao
+from octopus.modules.es import dao
 
 class RepositoryStatusDAO(dao.ESDAO):
     """

@@ -5,7 +5,7 @@ Model objects used to represent data from the JPER account system
 from flask_login import UserMixin
 
 from service import dao
-from standalone_octopus.lib import dataobj
+from octopus.lib import dataobj
 
 class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
     """

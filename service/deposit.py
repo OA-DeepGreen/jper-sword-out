@@ -4,13 +4,13 @@ repositories
 """
 import sword2, uuid
 from service import xwalk, models
-from standalone_octopus.modules.store import store
-from standalone_octopus.modules.jper import client
-from standalone_octopus.modules.jper import models as jmod
+from octopus.modules.store import store
+from octopus.modules.jper import client
+from octopus.modules.jper import models as jmod
 from io import StringIO
-from standalone_octopus.modules.swordv2 import client_http
-from standalone_octopus.core import app
-from standalone_octopus.lib import dates
+from octopus.modules.swordv2 import client_http
+from octopus.core import app
+from octopus.lib import dates
 
 class DepositException(Exception):
     """

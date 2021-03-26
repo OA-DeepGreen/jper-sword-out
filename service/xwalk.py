@@ -1,7 +1,7 @@
 """
 Module that handles the conversion of JPER json formatted notifications to XML suitable for delivery via SWORDv2
 """
-from standalone_octopus.modules.jper import models
+from octopus.modules.jper import models
 
 def to_dc_rioxx(note, entry):
     """

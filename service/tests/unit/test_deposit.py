@@ -2,17 +2,17 @@
 Tests on the deposit functions
 """
 
-from standalone_octopus.modules.es.testindex import ESTestCase
+from octopus.modules.es.testindex import ESTestCase
 from service import deposit, models
-from standalone_octopus.modules.jper import client
-from standalone_octopus.modules.jper import models as jmod
-from standalone_octopus.modules.store import store
+from octopus.modules.jper import client
+from octopus.modules.jper import models as jmod
+from octopus.modules.store import store
 from service.tests import fixtures
-from standalone_octopus.lib import dates, http
-from standalone_octopus.modules.swordv2 import client_http
+from octopus.lib import dates, http
+from octopus.modules.swordv2 import client_http
 import time, sword2, urllib.parse, json, os, zipfile
 from io import StringIO
-from standalone_octopus.core import app
+from octopus.core import app
 
 
 def mock_process_account_fail(*args, **kwargs):

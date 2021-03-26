@@ -2,7 +2,7 @@
 Models for representing the sword objects supporting the deposit run
 """
 
-from standalone_octopus.lib import dataobj, dates
+from octopus.lib import dataobj, dates
 from service import dao
 from datetime import datetime
 

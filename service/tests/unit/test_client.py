@@ -4,8 +4,8 @@ Tests on the JPER client
 
 # from octopus.modules.es.testindex import ESTestCase
 from unittest import TestCase
-from standalone_octopus.lib import http
-from standalone_octopus.modules.jper import client, models
+from octopus.lib import http
+from octopus.modules.jper import client, models
 from service.tests import fixtures
 import urllib.parse, json
 from io import StringIO
