@@ -50,19 +50,19 @@ PACKAGING = "http://purl.org/net/sword/package/SimpleZip"
 
 """
 SSS Configuration
+"""
 
-COL = "http://localhost:8080/col-uri/dbc32f11-3ffa-4fdd-88bc-af4544fa97d9"
+#COL = "http://localhost:8080/col-uri/dbc32f11-3ffa-4fdd-88bc-af4544fa97d9"
+COL = "http://localhost:8080/col-uri/1c1099ef-4500-4ebd-805f-23fdbfb5165b"
 ERR_COL = "http://localhost:8080/col-uri/thisdoesntexist"
 UN = "sword"
 PW = "sword"
 REPO_SOFTWARE = "SSS"
 
 PACKAGING = "http://purl.org/net/sword/package/SimpleZip"
-"""
 
 """
 Remote EPrints Configuration
-"""
 
 COL = "http://eprints2.cottagelabs.com/id/contents"
 ERR_COL = "http://eprints2.cottagelabs.com/id/thisdoesntexist"
@@ -71,7 +71,7 @@ PW = "password"
 REPO_SOFTWARE = "eprints"
 
 PACKAGING = "http://purl.org/net/sword/package/SimpleZip"
-
+"""
 
 def mock_get_content(url, *args, **kwargs):
     with open(fixtures.NotificationFactory.example_package_path()) as f:
@@ -178,7 +178,7 @@ class TestDeposit(ESTestCase):
         receipt = deposit.metadata_deposit(note, acc, deposit_record, complete=False)
 
         path = fixtures.NotificationFactory.example_package_path()
-        with open(path) as f:
+        with open(path, 'rb') as f:
             deposit.package_deposit(receipt, f, PACKAGING, acc, deposit_record)
 
         # check the properties of the deposit_record
