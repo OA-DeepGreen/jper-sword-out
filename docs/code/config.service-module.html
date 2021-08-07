@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>config.service</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/JiscPER/jper-sword-out">Jisc Publications Router - SWORDv2 repository depositor</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="config-module.html">Package&nbsp;config</a> ::
+        Module&nbsp;service
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="config.service-module.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== MODULE DESCRIPTION ==================== -->
+<h1 class="epydoc">Module service</h1><p class="nomargin-top"><span class="codelink"><a href="config.service-pysrc.html">source&nbsp;code</a></span></p>
+<p>Main configuration file for the application</p>
+<p>On deployment, desired configuration can be overridden by the provision of a local.cfg file</p>
+
+<!-- ==================== VARIABLES ==================== -->
+<a name="section-Variables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Variables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="DEBUG"></a><span class="summary-name">DEBUG</span> = <code title="True">True</code><br />
+      is the web server in debug mode
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="PORT"></a><span class="summary-name">PORT</span> = <code title="5027">5027</code><br />
+      port to start the webserver on
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="SSL"></a><span class="summary-name">SSL</span> = <code title="False">False</code><br />
+      support SSL requests
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="THREADED"></a><span class="summary-name">THREADED</span> = <code title="True">True</code><br />
+      is the web server in threaded mode
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="ELASTIC_SEARCH_HOST"></a><span class="summary-name">ELASTIC_SEARCH_HOST</span> = <code title="&quot;http://gateway:9200&quot;">&quot;http://gateway:9200&quot;</code><br />
+      base url to access elasticsearch
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="ELASTIC_SEARCH_INDEX"></a><span class="summary-name">ELASTIC_SEARCH_INDEX</span> = <code title="&quot;jper&quot;">&quot;jper&quot;</code><br />
+      index name in elasticsearch where our types are stored
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="ELASTIC_SEARCH_VERSION"></a><span class="summary-name">ELASTIC_SEARCH_VERSION</span> = <code title="&quot;1.5.2&quot;">&quot;1.5.2&quot;</code><br />
+      version of elasticsearch which we're using - matters for certain semantics of requests
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="ELASTIC_SEARCH_MAPPINGS"></a><span class="summary-name">ELASTIC_SEARCH_MAPPINGS</span> = <code title="[]">[]</code><br />
+      type-specific mappings to be used when initialising - currently there are none
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="ELASTIC_SEARCH_EXAMPLE_DOCS"></a><span class="summary-name">ELASTIC_SEARCH_EXAMPLE_DOCS</span> = <code title="[]">[]</code><br />
+      types which have their mappings initialised by example when initialising - currently there are none
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="ACCOUNT_ENABLE"></a><span class="summary-name">ACCOUNT_ENABLE</span> = <code title="False">False</code><br />
+      Disable user accounts
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="SECRET_KEY"></a><span class="summary-name">SECRET_KEY</span> = <code title="&quot;super-secret-key&quot;">&quot;super-secret-key&quot;</code><br />
+      secret key for session management - only used when accounts are enabled
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="STORE_IMPL"></a><span class="summary-name">STORE_IMPL</span> = <code title="&quot;octopus.modules.store.store.StoreLocal&quot;">&quot;octopus.modules.store.store.StoreLocal&quot;</code><br />
+      implementation class of the main fielstore
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="STORE_TMP_IMPL"></a><span class="summary-name">STORE_TMP_IMPL</span> = <code title="&quot;octopus.modules.store.store.TempStore&quot;">&quot;octopus.modules.store.store.TempStore&quot;</code><br />
+      implementation class of the temporary local filestore
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="config.service-module.html#STORE_LOCAL_DIR" class="summary-name">STORE_LOCAL_DIR</a> = <code title="paths.rel2abs(__file__, &quot;..&quot;, &quot;service&quot;, &quot;tests&quot;, &quot;local_store&quot;, &quot;live\
+&quot;)">paths.rel2abs(__file__, &quot;..&quot;, &quot;service&quot;, &quot;te<code class="variable-ellipsis">...</code></code><br />
+      path to local directory for local file store - specified relative to this file
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="config.service-module.html#STORE_TMP_DIR" class="summary-name">STORE_TMP_DIR</a> = <code title="paths.rel2abs(__file__, &quot;..&quot;, &quot;service&quot;, &quot;tests&quot;, &quot;local_store&quot;, &quot;tmp&quot;\
+)">paths.rel2abs(__file__, &quot;..&quot;, &quot;service&quot;, &quot;test<code class="variable-ellipsis">...</code></code><br />
+      path to local directory for temp file store - specified relative to this file
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="LONG_CYCLE_RETRY_DELAY"></a><span class="summary-name">LONG_CYCLE_RETRY_DELAY</span> = <code title="3600">3600</code><br />
+      Delay in between attempts to communicate with a repository that is failing, in seconds
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="LONG_CYCLE_RETRY_LIMIT"></a><span class="summary-name">LONG_CYCLE_RETRY_LIMIT</span> = <code title="24">24</code><br />
+      Number of re-try attempts against a failing repository before we give up
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="DEFAULT_SINCE_DATE"></a><span class="summary-name">DEFAULT_SINCE_DATE</span> = <code title="&quot;1970-01-01T00:00:00Z&quot;">&quot;1970-01-01T00:00:00Z&quot;</code><br />
+      The date from which the first request against the JPER API will be made when listing a repository's notifications
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="RUN_THROTTLE"></a><span class="summary-name">RUN_THROTTLE</span> = <code title="2">2</code><br />
+      delay between executions of the deposit script, in seconds
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="STORE_RESPONSE_DATA"></a><span class="summary-name">STORE_RESPONSE_DATA</span> = <code title="False">False</code><br />
+      Whether to store response data or not - set to True if testing
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES DETAILS ==================== -->
+<a name="section-VariablesDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-VariablesDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="STORE_LOCAL_DIR"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">STORE_LOCAL_DIR</h3>
+  path to local directory for local file store - specified relative to this file
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+paths.rel2abs(__file__, &quot;..&quot;, &quot;service&quot;, &quot;tests&quot;, &quot;local_store&quot;, &quot;live<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+&quot;)
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="STORE_TMP_DIR"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">STORE_TMP_DIR</h3>
+  path to local directory for temp file store - specified relative to this file
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+paths.rel2abs(__file__, &quot;..&quot;, &quot;service&quot;, &quot;tests&quot;, &quot;local_store&quot;, &quot;tmp&quot;<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+)
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/JiscPER/jper-sword-out">Jisc Publications Router - SWORDv2 repository depositor</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Wed Nov 25 09:18:47 2015
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

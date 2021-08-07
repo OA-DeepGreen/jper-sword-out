@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>config.service</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/JiscPER/jper-sword-out">Jisc Publications Router - SWORDv2 repository depositor</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="config-module.html">Package&nbsp;config</a> ::
+        Module&nbsp;service
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="config.service-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="config.service-module.html">Module config.service</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-docstring">"""</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-docstring">Main configuration file for the application</tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-docstring">On deployment, desired configuration can be overridden by the provision of a local.cfg file</tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-docstring">"""</tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-comment">##################################################</tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-comment"># overrides for the webapp deployment</tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt id="link-0" class="py-name" targets="Variable config.service.DEBUG=config.service-module.html#DEBUG"><a title="config.service.DEBUG" class="py-name" href="#" onclick="return doclink('link-0', 'DEBUG', 'link-0');">DEBUG</a></tt> <tt class="py-op">=</tt> <tt class="py-name">True</tt> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"><tt class="py-string">"""is the web server in debug mode"""</tt> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"><tt id="link-1" class="py-name" targets="Variable config.service.PORT=config.service-module.html#PORT"><a title="config.service.PORT" class="py-name" href="#" onclick="return doclink('link-1', 'PORT', 'link-1');">PORT</a></tt> <tt class="py-op">=</tt> <tt class="py-number">5027</tt> </tt>
+<a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line"><tt class="py-string">"""port to start the webserver on"""</tt> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"> </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"><tt id="link-2" class="py-name" targets="Variable config.service.SSL=config.service-module.html#SSL"><a title="config.service.SSL" class="py-name" href="#" onclick="return doclink('link-2', 'SSL', 'link-2');">SSL</a></tt> <tt class="py-op">=</tt> <tt class="py-name">False</tt> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"><tt class="py-string">"""support SSL requests"""</tt> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line"><tt id="link-3" class="py-name" targets="Variable config.service.THREADED=config.service-module.html#THREADED"><a title="config.service.THREADED" class="py-name" href="#" onclick="return doclink('link-3', 'THREADED', 'link-3');">THREADED</a></tt> <tt class="py-op">=</tt> <tt class="py-name">True</tt> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line"><tt class="py-string">"""is the web server in threaded mode"""</tt> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line"> </tt>
+<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line"><tt class="py-comment">############################################</tt> </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line"><tt class="py-comment"># important overrides for the ES module</tt> </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line"> </tt>
+<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line"><tt class="py-comment"># elasticsearch back-end connection settings</tt> </tt>
+<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line"><tt id="link-4" class="py-name" targets="Variable config.service.ELASTIC_SEARCH_HOST=config.service-module.html#ELASTIC_SEARCH_HOST"><a title="config.service.ELASTIC_SEARCH_HOST" class="py-name" href="#" onclick="return doclink('link-4', 'ELASTIC_SEARCH_HOST', 'link-4');">ELASTIC_SEARCH_HOST</a></tt> <tt class="py-op">=</tt> <tt class="py-string">"http://gateway:9200"</tt> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line"><tt class="py-string">"""base url to access elasticsearch"""</tt> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line"> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line"><tt id="link-5" class="py-name" targets="Variable config.service.ELASTIC_SEARCH_INDEX=config.service-module.html#ELASTIC_SEARCH_INDEX"><a title="config.service.ELASTIC_SEARCH_INDEX" class="py-name" href="#" onclick="return doclink('link-5', 'ELASTIC_SEARCH_INDEX', 'link-5');">ELASTIC_SEARCH_INDEX</a></tt> <tt class="py-op">=</tt> <tt class="py-string">"jper"</tt> </tt>
+<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line"><tt class="py-string">"""index name in elasticsearch where our types are stored"""</tt> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line"> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line"><tt id="link-6" class="py-name" targets="Variable config.service.ELASTIC_SEARCH_VERSION=config.service-module.html#ELASTIC_SEARCH_VERSION"><a title="config.service.ELASTIC_SEARCH_VERSION" class="py-name" href="#" onclick="return doclink('link-6', 'ELASTIC_SEARCH_VERSION', 'link-6');">ELASTIC_SEARCH_VERSION</a></tt> <tt class="py-op">=</tt> <tt class="py-string">"1.5.2"</tt> </tt>
+<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line"><tt class="py-string">"""version of elasticsearch which we're using - matters for certain semantics of requests"""</tt> </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line"> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line"><tt class="py-comment"># Classes from which to retrieve ES mappings to be used in this application</tt> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line"><tt class="py-comment"># (note that if ELASTIC_SEARCH_DEFAULT_MAPPINGS is sufficient, you don't need to</tt> </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line"><tt class="py-comment"># add anything here</tt> </tt>
+<a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line"><tt id="link-7" class="py-name" targets="Variable config.service.ELASTIC_SEARCH_MAPPINGS=config.service-module.html#ELASTIC_SEARCH_MAPPINGS"><a title="config.service.ELASTIC_SEARCH_MAPPINGS" class="py-name" href="#" onclick="return doclink('link-7', 'ELASTIC_SEARCH_MAPPINGS', 'link-7');">ELASTIC_SEARCH_MAPPINGS</a></tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt> </tt>
+<a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line">    <tt class="py-comment"># "service.dao.MyDAO"</tt> </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line"><tt class="py-op">]</tt> </tt>
+<a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line"><tt class="py-string">"""type-specific mappings to be used when initialising - currently there are none"""</tt> </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line"> </tt>
+<a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line"><tt class="py-comment"># initialise the index with example documents from each of the types</tt> </tt>
+<a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line"><tt class="py-comment"># this will initialise each type and auto-create the relevant mappings where</tt> </tt>
+<a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line"><tt class="py-comment"># example data is provided</tt> </tt>
+<a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line"><tt id="link-8" class="py-name" targets="Variable config.service.ELASTIC_SEARCH_EXAMPLE_DOCS=config.service-module.html#ELASTIC_SEARCH_EXAMPLE_DOCS"><a title="config.service.ELASTIC_SEARCH_EXAMPLE_DOCS" class="py-name" href="#" onclick="return doclink('link-8', 'ELASTIC_SEARCH_EXAMPLE_DOCS', 'link-8');">ELASTIC_SEARCH_EXAMPLE_DOCS</a></tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt> </tt>
+<a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line">    <tt class="py-comment"># "service.dao.MyDAO"</tt> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line"><tt class="py-op">]</tt> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line"><tt class="py-string">"""types which have their mappings initialised by example when initialising - currently there are none"""</tt> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line"> </tt>
+<a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line"><tt class="py-comment">############################################</tt> </tt>
+<a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line"><tt class="py-comment"># important overrides for account module</tt> </tt>
+<a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line"> </tt>
+<a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line"><tt id="link-9" class="py-name" targets="Variable config.service.ACCOUNT_ENABLE=config.service-module.html#ACCOUNT_ENABLE"><a title="config.service.ACCOUNT_ENABLE" class="py-name" href="#" onclick="return doclink('link-9', 'ACCOUNT_ENABLE', 'link-9');">ACCOUNT_ENABLE</a></tt> <tt class="py-op">=</tt> <tt class="py-name">False</tt> </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line"><tt class="py-string">"""Disable user accounts"""</tt> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line"> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line"><tt id="link-10" class="py-name" targets="Variable config.service.SECRET_KEY=config.service-module.html#SECRET_KEY"><a title="config.service.SECRET_KEY" class="py-name" href="#" onclick="return doclink('link-10', 'SECRET_KEY', 'link-10');">SECRET_KEY</a></tt> <tt class="py-op">=</tt> <tt class="py-string">"super-secret-key"</tt> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line"><tt class="py-string">"""secret key for session management - only used when accounts are enabled"""</tt> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line"> </tt>
+<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line"><tt class="py-comment">#############################################</tt> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line"><tt class="py-comment"># important overrides for storage module</tt> </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line"> </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line"><tt id="link-11" class="py-name" targets="Variable config.service.STORE_IMPL=config.service-module.html#STORE_IMPL"><a title="config.service.STORE_IMPL" class="py-name" href="#" onclick="return doclink('link-11', 'STORE_IMPL', 'link-11');">STORE_IMPL</a></tt> <tt class="py-op">=</tt> <tt class="py-string">"octopus.modules.store.store.StoreLocal"</tt> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line"><tt class="py-string">"""implementation class of the main fielstore"""</tt> </tt>
+<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line"> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line"><tt id="link-12" class="py-name" targets="Variable config.service.STORE_TMP_IMPL=config.service-module.html#STORE_TMP_IMPL"><a title="config.service.STORE_TMP_IMPL" class="py-name" href="#" onclick="return doclink('link-12', 'STORE_TMP_IMPL', 'link-12');">STORE_TMP_IMPL</a></tt> <tt class="py-op">=</tt> <tt class="py-string">"octopus.modules.store.store.TempStore"</tt> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line"><tt class="py-string">"""implementation class of the temporary local filestore"""</tt> </tt>
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line"> </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">octopus</tt><tt class="py-op">.</tt><tt class="py-name">lib</tt> <tt class="py-keyword">import</tt> <tt class="py-name">paths</tt> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line"><tt id="link-13" class="py-name" targets="Variable config.service.STORE_LOCAL_DIR=config.service-module.html#STORE_LOCAL_DIR"><a title="config.service.STORE_LOCAL_DIR" class="py-name" href="#" onclick="return doclink('link-13', 'STORE_LOCAL_DIR', 'link-13');">STORE_LOCAL_DIR</a></tt> <tt class="py-op">=</tt> <tt class="py-name">paths</tt><tt class="py-op">.</tt><tt class="py-name">rel2abs</tt><tt class="py-op">(</tt><tt class="py-name">__file__</tt><tt class="py-op">,</tt> <tt class="py-string">".."</tt><tt class="py-op">,</tt> <tt class="py-string">"service"</tt><tt class="py-op">,</tt> <tt class="py-string">"tests"</tt><tt class="py-op">,</tt> <tt class="py-string">"local_store"</tt><tt class="py-op">,</tt> <tt class="py-string">"live"</tt><tt class="py-op">)</tt> </tt>
+<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line"><tt class="py-string">"""path to local directory for local file store - specified relative to this file"""</tt> </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line"> </tt>
+<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line"><tt id="link-14" class="py-name" targets="Variable config.service.STORE_TMP_DIR=config.service-module.html#STORE_TMP_DIR"><a title="config.service.STORE_TMP_DIR" class="py-name" href="#" onclick="return doclink('link-14', 'STORE_TMP_DIR', 'link-14');">STORE_TMP_DIR</a></tt> <tt class="py-op">=</tt> <tt class="py-name">paths</tt><tt class="py-op">.</tt><tt class="py-name">rel2abs</tt><tt class="py-op">(</tt><tt class="py-name">__file__</tt><tt class="py-op">,</tt> <tt class="py-string">".."</tt><tt class="py-op">,</tt> <tt class="py-string">"service"</tt><tt class="py-op">,</tt> <tt class="py-string">"tests"</tt><tt class="py-op">,</tt> <tt class="py-string">"local_store"</tt><tt class="py-op">,</tt> <tt class="py-string">"tmp"</tt><tt class="py-op">)</tt> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line"><tt class="py-string">"""path to local directory for temp file store - specified relative to this file"""</tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line"> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line"> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line"><tt class="py-comment">#############################################</tt> </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line"><tt class="py-comment"># Re-try/back-off settings</tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line"> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line"><tt class="py-comment"># from the http layer</tt> </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line"> </tt>
+<a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line"><tt class="py-comment"># specific to this app</tt> </tt>
+<a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line"> </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line"><tt class="py-comment"># Minimum amount to leave between attempts to deposit, in the event that there was a semi-permanent error</tt> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line"><tt class="py-comment"># default to 1 hour</tt> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line"><tt id="link-15" class="py-name" targets="Variable config.service.LONG_CYCLE_RETRY_DELAY=config.service-module.html#LONG_CYCLE_RETRY_DELAY"><a title="config.service.LONG_CYCLE_RETRY_DELAY" class="py-name" href="#" onclick="return doclink('link-15', 'LONG_CYCLE_RETRY_DELAY', 'link-15');">LONG_CYCLE_RETRY_DELAY</a></tt> <tt class="py-op">=</tt> <tt class="py-number">3600</tt> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line"><tt class="py-string">"""Delay in between attempts to communicate with a repository that is failing, in seconds"""</tt> </tt>
+<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line"> </tt>
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line"><tt class="py-comment"># Maximum number of times to try and deposit before giving up and turning off repository sword submission</tt> </tt>
+<a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line"><tt class="py-comment"># for a given account</tt> </tt>
+<a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line"><tt id="link-16" class="py-name" targets="Variable config.service.LONG_CYCLE_RETRY_LIMIT=config.service-module.html#LONG_CYCLE_RETRY_LIMIT"><a title="config.service.LONG_CYCLE_RETRY_LIMIT" class="py-name" href="#" onclick="return doclink('link-16', 'LONG_CYCLE_RETRY_LIMIT', 'link-16');">LONG_CYCLE_RETRY_LIMIT</a></tt> <tt class="py-op">=</tt> <tt class="py-number">24</tt> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line"><tt class="py-string">"""Number of re-try attempts against a failing repository before we give up"""</tt> </tt>
+<a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line"> </tt>
+<a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line"><tt class="py-comment">###############################################</tt> </tt>
+<a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line"><tt class="py-comment">## Other app-specific settings</tt> </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line"> </tt>
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line"><tt id="link-17" class="py-name" targets="Variable config.service.DEFAULT_SINCE_DATE=config.service-module.html#DEFAULT_SINCE_DATE"><a title="config.service.DEFAULT_SINCE_DATE" class="py-name" href="#" onclick="return doclink('link-17', 'DEFAULT_SINCE_DATE', 'link-17');">DEFAULT_SINCE_DATE</a></tt> <tt class="py-op">=</tt> <tt class="py-string">"1970-01-01T00:00:00Z"</tt> </tt>
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line"><tt class="py-string">"""The date from which the first request against the JPER API will be made when listing a repository's notifications"""</tt> </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line"> </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line"><tt class="py-comment"># how many seconds in between each run of the script</tt> </tt>
+<a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line"><tt id="link-18" class="py-name" targets="Variable config.service.RUN_THROTTLE=config.service-module.html#RUN_THROTTLE"><a title="config.service.RUN_THROTTLE" class="py-name" href="#" onclick="return doclink('link-18', 'RUN_THROTTLE', 'link-18');">RUN_THROTTLE</a></tt> <tt class="py-op">=</tt> <tt class="py-number">2</tt> </tt>
+<a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line"><tt class="py-string">"""delay between executions of the deposit script, in seconds"""</tt> </tt>
+<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line"> </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line"><tt class="py-comment"># whether to store sword response data (receipt, etc).  Recommend only to store during testing operation</tt> </tt>
+<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line"><tt id="link-19" class="py-name" targets="Variable config.service.STORE_RESPONSE_DATA=config.service-module.html#STORE_RESPONSE_DATA"><a title="config.service.STORE_RESPONSE_DATA" class="py-name" href="#" onclick="return doclink('link-19', 'STORE_RESPONSE_DATA', 'link-19');">STORE_RESPONSE_DATA</a></tt> <tt class="py-op">=</tt> <tt class="py-name">False</tt> </tt>
+<a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line"><tt class="py-string">"""Whether to store response data or not - set to True if testing"""</tt> </tt>
+<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/JiscPER/jper-sword-out">Jisc Publications Router - SWORDv2 repository depositor</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Wed Nov 25 09:18:48 2015
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

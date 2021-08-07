@@ -1,0 +1,581 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>service.models.account.Account</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/JiscPER/jper-sword-out">Jisc Publications Router - SWORDv2 repository depositor</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="service-module.html">Package&nbsp;service</a> ::
+        <a href="service.models-module.html">Package&nbsp;models</a> ::
+        <a href="service.models.account-module.html">Module&nbsp;account</a> ::
+        Class&nbsp;Account
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="service.models.account.Account-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class Account</h1><p class="nomargin-top"><span class="codelink"><a href="service.models.account-pysrc.html#Account">source&nbsp;code</a></span></p>
+<center>
+<center>  <map id="uml_class_diagram_for_service__7" name="uml_class_diagram_for_service__7">
+<area shape="rect" id="node1_10" href="service.models.account.Account-class.html#api_key" title="Get the API key for this account" alt="" coords="17,132,379,152"/>
+<area shape="rect" id="node1_11" href="service.models.account.Account-class.html#packaging" title="Get the list of supported packaging formats for this account" alt="" coords="17,152,379,172"/>
+<area shape="rect" id="node1_12" href="service.models.account.Account-class.html#add_packaging" title="Add a packaging format to the list of supported formats" alt="" coords="17,172,379,192"/>
+<area shape="rect" id="node1_13" href="service.models.account.Account-class.html#add_sword_credentials" title="Add the sword credentials for the user" alt="" coords="17,192,379,212"/>
+<area shape="rect" id="node1_14" href="service.models.account.Account-class.html#sword_collection" title="Get the url of the collection in the repository to deposit to" alt="" coords="17,212,379,232"/>
+<area shape="rect" id="node1_15" href="service.models.account.Account-class.html#sword_username" title="Get the username of the repository account to deposit as" alt="" coords="17,232,379,252"/>
+<area shape="rect" id="node1_16" href="service.models.account.Account-class.html#sword_password" title="Get the password for the repository user to deposit as" alt="" coords="17,252,379,272"/>
+<area shape="rect" id="node1_17" href="service.models.account.Account-class.html#repository_software" title="Set the name of the repository software we are depositing to" alt="" coords="17,272,379,292"/>
+<area shape="rect" id="node1" href="service.models.account.Account-class.html" title="Account model which mirrors the JPER account model, providing only the functions we need within the sword depositor" alt="" coords="5,99,390,299"/>
+<area shape="rect" id="node2_18" href="service.dao.AccountDAO-class.html#__type__" title="service.dao.AccountDAO.__type__" alt="" coords="119,31,277,51"/>
+<area shape="rect" id="node2_19" href="service.dao.AccountDAO-class.html#with_sword_activated" title="List all accounts in JPER that have sword deposit activated" alt="" coords="119,53,277,73"/>
+<area shape="rect" id="node2" href="service.dao.AccountDAO-class.html" title="DAO for Account" alt="" coords="106,5,289,80"/>
+</map>
+  <img src="uml_class_diagram_for_service__7.gif" alt='' usemap="#uml_class_diagram_for_service__7" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+Account model which mirrors the JPER account model, providing only the functions
+we need within the sword depositor
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.account.Account-class.html#api_key" class="summary-sig-name">api_key</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Get the API key for this account</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.account-pysrc.html#Account.api_key">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.account.Account-class.html#packaging" class="summary-sig-name">packaging</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Get the list of supported packaging formats for this account</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.account-pysrc.html#Account.packaging">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.account.Account-class.html#add_packaging" class="summary-sig-name">add_packaging</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Add a packaging format to the list of supported formats</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.account-pysrc.html#Account.add_packaging">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.account.Account-class.html#add_sword_credentials" class="summary-sig-name">add_sword_credentials</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">username</span>,
+        <span class="summary-sig-arg">password</span>,
+        <span class="summary-sig-arg">collection</span>)</span><br />
+      Add the sword credentials for the user</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.account-pysrc.html#Account.add_sword_credentials">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.account.Account-class.html#sword_collection" class="summary-sig-name">sword_collection</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Get the url of the collection in the repository to deposit to</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.account-pysrc.html#Account.sword_collection">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.account.Account-class.html#sword_username" class="summary-sig-name">sword_username</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Get the username of the repository account to deposit as</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.account-pysrc.html#Account.sword_username">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.account.Account-class.html#sword_password" class="summary-sig-name">sword_password</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Get the password for the repository user to deposit as</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.account-pysrc.html#Account.sword_password">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.models.account.Account-class.html#repository_software" class="summary-sig-name">repository_software</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">val</span>)</span><br />
+      Set the name of the repository software we are depositing to</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.models.account-pysrc.html#Account.repository_software">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS METHODS ==================== -->
+<a name="section-ClassMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr bgcolor="#e8f0f8" >
+  <th colspan="2" class="group-header"
+    >&nbsp;&nbsp;&nbsp;&nbsp;Inherited from <a href="service.dao.AccountDAO-class.html">dao.AccountDAO</a></th></tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="service.dao.AccountDAO-class.html#with_sword_activated" class="summary-sig-name">with_sword_activated</a>(<span class="summary-sig-arg">cls</span>)</span><br />
+      List all accounts in JPER that have sword deposit activated</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="service.dao-pysrc.html#AccountDAO.with_sword_activated">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS VARIABLES ==================== -->
+<a name="section-ClassVariables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr bgcolor="#e8f0f8" >
+  <th colspan="2" class="group-header"
+    >&nbsp;&nbsp;&nbsp;&nbsp;Inherited from <a href="service.dao.AccountDAO-class.html">dao.AccountDAO</a></th></tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="__type__"></a><span class="summary-name">__type__</span> = <code title="&quot;account&quot;">&quot;account&quot;</code>
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="api_key"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">api_key</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.models.account-pysrc.html#Account.api_key">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Get the API key for this account
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>the account's api key</dd>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="packaging"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">packaging</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.models.account-pysrc.html#Account.packaging">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Get the list of supported packaging formats for this account
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>list of packaging formats</dd>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="add_packaging"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">add_packaging</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">val</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.models.account-pysrc.html#Account.add_packaging">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Add a packaging format to the list of supported formats
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>val</code></strong> - format identifier</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="add_sword_credentials"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">add_sword_credentials</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">username</span>,
+        <span class="sig-arg">password</span>,
+        <span class="sig-arg">collection</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.models.account-pysrc.html#Account.add_sword_credentials">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Add the sword credentials for the user
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>username</code></strong> - username to deposit to repository as</li>
+        <li><strong class="pname"><code>password</code></strong> - password of repository user account</li>
+        <li><strong class="pname"><code>collection</code></strong> - collection url to deposit to</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="sword_collection"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">sword_collection</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.models.account-pysrc.html#Account.sword_collection">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Get the url of the collection in the repository to deposit to
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>collection url</dd>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="sword_username"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">sword_username</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.models.account-pysrc.html#Account.sword_username">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Get the username of the repository account to deposit as
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>username</dd>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="sword_password"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">sword_password</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.models.account-pysrc.html#Account.sword_password">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Get the password for the repository user to deposit as
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>password</dd>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="repository_software"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">repository_software</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">val</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="service.models.account-pysrc.html#Account.repository_software">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Set the name of the repository software we are depositing to
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>val</code></strong> - software name</li>
+    </ul></dd>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@repository_software.setter</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/JiscPER/jper-sword-out">Jisc Publications Router - SWORDv2 repository depositor</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Wed Nov 25 09:18:47 2015
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>
