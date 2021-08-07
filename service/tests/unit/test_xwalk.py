@@ -36,10 +36,9 @@ class TestModels(TestCase):
         identifiers = _texts(DC, "identifier")
         assert len(identifiers) == 5
 
-        assert "http://router.jisc.ac.uk/api/v1/notification/1234567890/content/1" in identifiers
-        assert "http://router.jisc.ac.uk/api/v1/notification/1234567890/content/2" in identifiers
-        assert "http://router.jisc.ac.uk/api/v1/notification/1234567890/content/SimpleZip" in identifiers
-        assert "http://router.jisc.ac.uk/api/v1/notification/1234567890/content" in identifiers
+        assert "http://localhost:5998/api/v1/notification/1234567890/content/2" in identifiers
+        assert "http://localhost:5998/api/v1/notification/1234567890/content/SimpleZip" in identifiers
+        assert "http://localhost:5998/api/v1/notification/1234567890/content" in identifiers
         assert "doi:10.pp/jit.1" in identifiers
 
         available = _texts(TERMS, "available")

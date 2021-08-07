@@ -16,33 +16,33 @@ def mock_list(url, *args, **kwargs):
 
     if params["since"][0] == "1970-01-01T00:00:00Z":
         nl = fixtures.NotificationFactory.notification_list(params["since"][0], pageSize=2, count=2)
-        return http.MockResponse(200, json.dumps(nl))
+        return http.MockResponse(200, json.dumps(nl).encode())
     elif params["since"][0] == "1971-01-01T00:00:00Z":
         before = (int(params["page"][0]) - 1) * int(params["pageSize"][0])
         nl = fixtures.NotificationFactory.notification_list(params["since"][0], page=int(params["page"][0]), pageSize=int(params["pageSize"][0]), count=before + 3)
-        return http.MockResponse(200, json.dumps(nl))
+        return http.MockResponse(200, json.dumps(nl).encode())
     elif params["since"][0] == "1972-01-01T00:00:00Z":
         return None
     elif params["since"][0] == "1973-01-01T00:00:00Z":
         return http.MockResponse(401)
     elif params["since"][0] == "1974-01-01T00:00:00Z":
         err = fixtures.NotificationFactory.error_response()
-        return http.MockResponse(400, json.dumps(err))
+        return http.MockResponse(400, json.dumps(err).encode())
 
 def mock_get_content(url, *args, **kwargs):
     parsed = urllib.parse.urlparse(url)
 
     if parsed.path.endswith("/content"):
-        return http.MockResponse(200, "default content"), "", 0
+        return http.MockResponse(200, b"default content"), "", 0
     elif parsed.path.endswith("/content/SimpleZip"):
-        return http.MockResponse(200, "simplezip"), "", 0
+        return http.MockResponse(200, b"simplezip"), "", 0
     elif parsed.path.endswith("nohttp"):
         return None, "", 0
     elif parsed.path.endswith("auth"):
         return http.MockResponse(401), "", 0
     elif parsed.path.endswith("error"):
         err = fixtures.NotificationFactory.error_response()
-        return http.MockResponse(400, json.dumps(err)), "", 0
+        return http.MockResponse(400, json.dumps(err).encode()), "", 0
 
 def mock_iterate(url, *args, **kwargs):
     parsed = urllib.parse.urlparse(url)
@@ -50,14 +50,14 @@ def mock_iterate(url, *args, **kwargs):
 
     if params["page"][0] == "1":
         nl = fixtures.NotificationFactory.notification_list(params["since"][0], page=int(params["page"][0]), pageSize=2, count=4, ids=["1111", "2222"])
-        return http.MockResponse(200, json.dumps(nl))
+        return http.MockResponse(200, json.dumps(nl).encode())
     elif params["page"][0] == "2":
         nl = fixtures.NotificationFactory.notification_list(params["since"][0], page=int(params["page"][0]), pageSize=2, count=4, ids=["3333", "4444"])
-        return http.MockResponse(200, json.dumps(nl))
+        return http.MockResponse(200, json.dumps(nl).encode())
     raise Exception()
 
-API_KEY = "testing"
-JPER_BASE_URL = "http://localhost:5024"
+API_KEY = "admin"     # empty API key will result in api creds being removed from request
+JPER_BASE_URL = "http://localhost:5998"     # fixme: should this use a config setting? test instance?
 
 class TestModels(TestCase):
     def setUp(self):
@@ -113,14 +113,14 @@ class TestModels(TestCase):
         # try the default content url
         url = "http://localhost:5024/notification/12345/content"
         gen, headers = c.get_content(url)
-        assert hasattr(gen, "next")
-        assert next(gen) == "default content"
+        assert hasattr(gen, "__next__")
+        assert next(gen) == b"default content"
 
         # try a specific content url
         url = "http://localhost:5024/notification/12345/content/SimpleZip"
         gen, headers = c.get_content(url)
-        assert hasattr(gen, "next")
-        assert next(gen) == "simplezip"
+        assert hasattr(gen, "__next__")
+        assert next(gen) == b"simplezip"
 
         # check a failed http request
         with self.assertRaises(client.JPERConnectionException):
@@ -154,11 +154,11 @@ class TestModels(TestCase):
         # try getting the two link types we know are in the notification
         faj = note.get_package_link("https://pubrouter.jisc.ac.uk/FilesAndJATS")
         assert faj is not None
-        assert faj.get("url") == "http://router.jisc.ac.uk/api/v1/notification/1234567890/content"
+        assert faj.get("url") == "http://localhost:5998/api/v1/notification/1234567890/content"
 
         sz = note.get_package_link("http://purl.org/net/sword/package/SimpleZip")
         assert sz is not None
-        assert sz.get("url") == "http://router.jisc.ac.uk/api/v1/notification/1234567890/content/SimpleZip"
+        assert sz.get("url") == "http://localhost:5998/api/v1/notification/1234567890/content/SimpleZip"
 
         # try getting a link which doesn't exist
         nx = note.get_package_link("http://some.package/or/other")

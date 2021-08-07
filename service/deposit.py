@@ -7,7 +7,7 @@ from service import xwalk, models
 from octopus.modules.store import store
 from octopus.modules.jper import client
 from octopus.modules.jper import models as jmod
-from io import StringIO
+from io import BytesIO, StringIO
 from octopus.modules.swordv2 import client_http
 from octopus.core import app
 from octopus.lib import dates
@@ -34,7 +34,7 @@ def run(fail_on_error=True):
         try:
             process_account(acc)
         except client.JPERException as e:
-            app.logger.error("Problem while processing account for SWORD deposit: {x}".format(x=e.message))
+            app.logger.error("Problem while processing account for SWORD deposit: {x}".format(x=str(e)))
             if fail_on_error:
                 raise e
     app.logger.info("Leaving run")
@@ -121,7 +121,7 @@ def process_account(acc):
     except client.JPERException as e:
         # save the status where we currently got to, so we can pick up again later
         status.save()
-        app.logger.error("Problem while processing account for SWORD deposit: {x}".format(x=e.message))
+        app.logger.error("Problem while processing account for SWORD deposit: {x}".format(x=str(e)))
         raise e
 
     # if we get to here, all the notifications for this account have been deposited, 
@@ -396,7 +396,7 @@ def _cache_content(link, note, acc):
     try:
         gen, headers = j.get_content(link.get("url"))
     except client.JPERException as e:
-        app.logger.error("Problem while processing notification for SWORD deposit: {x}".format(x=e.message))
+        app.logger.error("Problem while processing notification for SWORD deposit: {x}".format(x=str(e)))
         raise e
 
     local_id = uuid.uuid4().hex
@@ -409,6 +409,8 @@ def _cache_content(link, note, acc):
         for chunk in gen:
             if chunk:
                 f.write(chunk)
+            else:
+                break
 
     app.logger.info("Leaving _cache_content")
     return local_id, out
@@ -435,7 +437,7 @@ def deepgreen_deposit(packaging, file_handle, acc, deposit_record):
     ##    try:
     ##        ur = conn.add_file_to_resource(receipt.edit_media, file_handle, "deposit.zip", "application/zip", packaging)
     ##    except Exception as e:
-    ##        msg = u"Received Error:{a} attempting to deposit file in repository for Account:{x} - raising DepositException".format(a=e.message, x=acc.id)
+    ##        msg = u"Received Error:{a} attempting to deposit file in repository for Account:{x} - raising DepositException".format(a=str(e), x=acc.id)
     ##        app.logger.error(msg)
     ##        raise DepositException(msg)
     ##else:
@@ -443,7 +445,7 @@ def deepgreen_deposit(packaging, file_handle, acc, deposit_record):
     ##    try:
     ##        ur = conn.update_files_for_resource(file_handle, "deposit.zip", mimetype="application/zip", packaging=packaging, dr=receipt)
     ##    except Exception as e:
-    ##        msg = u"Received Error:{a} attempting to deposit file in repository for Account:{x} - raising DepositException".format(a=e.message, x=acc.id)
+    ##        msg = u"Received Error:{a} attempting to deposit file in repository for Account:{x} - raising DepositException".format(a=str(e), x=acc.id)
     ##        app.logger.error(msg)
     ##        raise DepositException(msg)
 
@@ -452,7 +454,7 @@ def deepgreen_deposit(packaging, file_handle, acc, deposit_record):
     try:
         ur = conn.create(col_iri=acc.sword_collection, payload=file_handle, filename="deposit.zip", mimetype="application/zip", packaging=packaging)
     except Exception as e:
-        msg = "Received Error:{a} attempting to deposit file in repository for Account:{x} - raising DepositException".format(a=e.message, x=acc.id)
+        msg = "Received Error:{a} attempting to deposit file in repository for Account:{x} - raising DepositException".format(a=str(e), x=acc.id)
         app.logger.error(msg)
         raise DepositException(msg)
 
@@ -522,14 +524,14 @@ def metadata_deposit(note, acc, deposit_record, complete=False):
     try:
         receipt = conn.create(col_iri=acc.sword_collection, metadata_entry=entry, in_progress=ip)
     except Exception as e:
-        msg = "Received Error:{a} attempting to create object in repository for Notification:{y} for Account:{x} - raising DepositException".format(a=e.message, y=note.id, x=acc.id)
+        msg = "Received Error:{a} attempting to create object in repository for Notification:{y} for Account:{x} - raising DepositException".format(a=str(e), y=note.id, x=acc.id)
         app.logger.error(msg)
         raise DepositException(msg)
     
     # if the receipt has a dom object, store it (it may be a deposit receipt or an error)
     if receipt.dom is not None and app.config.get("STORE_RESPONSE_DATA", False):
         content = receipt.to_xml()
-        sm.store(deposit_record.id, "metadata_deposit_response.xml", source_stream=StringIO(content))
+        sm.store(deposit_record.id, "metadata_deposit_response.xml", source_stream=BytesIO(content))
 
     # find out if this was an error document, and throw an error if so
     # (recording deposited/failed on the deposit_record along the way)
@@ -565,7 +567,7 @@ def metadata_deposit(note, acc, deposit_record, complete=False):
         try:
             receipt = conn.get_deposit_receipt(receipt.edit)
         except Exception as e:
-            msg = "Received Error:{a} attempting to retrieve deposit receipt in repository for Notification:{y} for Account:{x} - raising DepositException".format(a=e.message, y=note.id, x=acc.id)
+            msg = "Received Error:{a} attempting to retrieve deposit receipt in repository for Notification:{y} for Account:{x} - raising DepositException".format(a=str(e), y=note.id, x=acc.id)
             app.logger.error(msg)
             raise DepositException(msg)
         if app.config.get("STORE_RESPONSE_DATA", False):
@@ -578,7 +580,7 @@ def metadata_deposit(note, acc, deposit_record, complete=False):
         try:
             conn.add_file_to_resource(receipt.edit_media, xmlhandle, "sword.xml", "text/xml")
         except Exception as e:
-            msg = "Received Error:{a} attempting to deposit atom entry as file in repository for Notification:{y} for Account:{x} - raising DepositException".format(a=e.message, y=note.id, x=acc.id)
+            msg = "Received Error:{a} attempting to deposit atom entry as file in repository for Notification:{y} for Account:{x} - raising DepositException".format(a=str(e), y=note.id, x=acc.id)
             app.logger.error(msg)
             raise DepositException(msg)
 
@@ -608,7 +610,7 @@ def package_deposit(receipt, file_handle, packaging, acc, deposit_record):
         try:
             ur = conn.add_file_to_resource(receipt.edit_media, file_handle, "deposit.zip", "application/zip", packaging)
         except Exception as e:
-            msg = "Received Error:{a} attempting to deposit file in repository for Account:{x} - raising DepositException".format(a=e.message, x=acc.id)
+            msg = "Received Error:{a} attempting to deposit file in repository for Account:{x} - raising DepositException".format(a=str(e), x=acc.id)
             app.logger.error(msg)
             raise DepositException(msg)
     else:
@@ -616,7 +618,7 @@ def package_deposit(receipt, file_handle, packaging, acc, deposit_record):
         try:
             ur = conn.update_files_for_resource(file_handle, "deposit.zip", mimetype="application/zip", packaging=packaging, dr=receipt)
         except Exception as e:
-            msg = "Received Error:{a} attempting to deposit file in repository for Account:{x} - raising DepositException".format(a=e.message, x=acc.id)
+            msg = "Received Error:{a} attempting to deposit file in repository for Account:{x} - raising DepositException".format(a=str(e), x=acc.id)
             app.logger.error(msg)
             raise DepositException(msg)
 
@@ -666,7 +668,7 @@ def complete_deposit(receipt, acc, deposit_record):
         try:
             cr = conn.complete_deposit(dr=receipt)
         except Exception as e:
-            msg = "Received Error:{a} attempting to complete deposit in repository for Account:{x} - raising DepositException".format(a=e.message, x=acc.id)
+            msg = "Received Error:{a} attempting to complete deposit in repository for Account:{x} - raising DepositException".format(a=str(e), x=acc.id)
             app.logger.error(msg)
             raise DepositException(msg)
 
