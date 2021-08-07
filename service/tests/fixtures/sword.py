@@ -84,7 +84,7 @@ DEPOSIT_RECORD = {
     "last_updated" : "1970-01-01T00:00:00Z",
     "created_date" : "1971-01-01T00:00:00Z",
 
-    "repository" : "12345",
+    #"repository" : "12345",
     "notification" : "abcde",
     "deposit_date" : "1972-01-01T00:00:00Z",
     "metadata_status" : "deposited",

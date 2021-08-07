@@ -35,7 +35,7 @@ if __name__ == "__main__":
         app.config['DEBUG'] = False
         import pydevd
         pydevd.settrace(app.config.get('DEBUG_SERVER_HOST', 'localhost'), port=app.config.get('DEBUG_SERVER_PORT', 51234), stdoutToServer=True, stderrToServer=True)
-        print "STARTED IN REMOTE DEBUG MODE"
+        print("STARTED IN REMOTE DEBUG MODE")
 
     initialise()
 
@@ -44,14 +44,14 @@ if __name__ == "__main__":
 
     col_counter = 0
     while True:
-        app.logger.info(u"Starting SWORDv2 Runner")
+        app.logger.info("Starting SWORDv2 Runner")
         deposit.run(fail_on_error=True)
 
-        print ".",
+        print(".", end=' ')
         sys.stdout.flush()
         col_counter += 1
         if col_counter >= 36:
-            print ""
+            print("")
             col_counter = 0
 
         time.sleep(app.config.get("RUN_THROTTLE"))

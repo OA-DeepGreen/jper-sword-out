@@ -90,7 +90,7 @@ class TestModels(ESTestCase):
         # test all its methods
         dataobj.test_dataobj(dr, fixtures.SwordFactory.deposit_record_do_test())
 
-        # make a new one around some existing data
+        # make a new one around some existing data  # fixme: model has been changed by DG
         dr = models.DepositRecord(fixtures.SwordFactory.deposit_record())
 
         # check the was_successful calculations

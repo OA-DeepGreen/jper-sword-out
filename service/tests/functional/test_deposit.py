@@ -21,7 +21,6 @@ Here, the only thing you would need to customise is the COL, to point to a colle
 exists in SSS.
 
 """
-# from unittest import TestCase
 from octopus.modules.es.testindex import ESTestCase
 from service import deposit, models
 from service.tests import fixtures
@@ -29,8 +28,7 @@ from octopus.modules.jper import models as jper
 from octopus.modules.store import store
 from octopus.core import app
 from lxml import etree
-import urlparse, json, time
-from StringIO import StringIO
+import urllib.parse, json, time
 from octopus.lib import http, dates, paths
 
 # NOTE: you need to be running a SWORD server for these tests to operate.
@@ -52,19 +50,19 @@ PACKAGING = "http://purl.org/net/sword/package/SimpleZip"
 
 """
 SSS Configuration
+"""
 
-COL = "http://localhost:8080/col-uri/dbc32f11-3ffa-4fdd-88bc-af4544fa97d9"
+#COL = "http://localhost:8080/col-uri/dbc32f11-3ffa-4fdd-88bc-af4544fa97d9"
+COL = "http://localhost:8080/col-uri/1c1099ef-4500-4ebd-805f-23fdbfb5165b"
 ERR_COL = "http://localhost:8080/col-uri/thisdoesntexist"
 UN = "sword"
 PW = "sword"
 REPO_SOFTWARE = "SSS"
 
 PACKAGING = "http://purl.org/net/sword/package/SimpleZip"
-"""
 
 """
 Remote EPrints Configuration
-"""
 
 COL = "http://eprints2.cottagelabs.com/id/contents"
 ERR_COL = "http://eprints2.cottagelabs.com/id/thisdoesntexist"
@@ -73,7 +71,7 @@ PW = "password"
 REPO_SOFTWARE = "eprints"
 
 PACKAGING = "http://purl.org/net/sword/package/SimpleZip"
-
+"""
 
 def mock_get_content(url, *args, **kwargs):
     with open(fixtures.NotificationFactory.example_package_path()) as f:
@@ -180,7 +178,7 @@ class TestDeposit(ESTestCase):
         receipt = deposit.metadata_deposit(note, acc, deposit_record, complete=False)
 
         path = fixtures.NotificationFactory.example_package_path()
-        with open(path) as f:
+        with open(path, 'rb') as f:
             deposit.package_deposit(receipt, f, PACKAGING, acc, deposit_record)
 
         # check the properties of the deposit_record
@@ -368,8 +366,8 @@ class TestDeposit(ESTestCase):
         # now make some notifications to be returned over http
         # defining this mock here for convenience during development
         def mock_get_list_intercept(url, *args, **kwargs):
-            parsed = urlparse.urlparse(url)
-            params = urlparse.parse_qs(parsed.query)
+            parsed = urllib.parse.urlparse(url)
+            params = urllib.parse.parse_qs(parsed.query)
 
             # if this is a request to list routed notifications we need to intercept and return the
             # mock response

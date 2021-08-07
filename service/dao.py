@@ -8,7 +8,6 @@ query methods as required
 """
 
 from octopus.modules.es import dao
-from octopus.core import app
 
 class RepositoryStatusDAO(dao.ESDAO):
     """

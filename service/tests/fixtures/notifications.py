@@ -218,23 +218,23 @@ OUTGOING = {
         {
             "type" : "splash",
             "format" : "text/html",
-            "url" : "http://router.jisc.ac.uk/api/v1/notification/1234567890/content/1"
+            "url" : "http://localhost:5998/api/v1/notification/1234567890/content/1"
         },
         {
             "type" : "fulltext",
             "format" : "application/pdf",
-            "url" : "http://router.jisc.ac.uk/api/v1/notification/1234567890/content/2"
+            "url" : "http://localhost:5998/api/v1/notification/1234567890/content/2"
         },
         {
             "type" : "package",
             "format" : "application/zip",
-            "url" : "http://router.jisc.ac.uk/api/v1/notification/1234567890/content/SimpleZip",
+            "url" : "http://localhost:5998/api/v1/notification/1234567890/content/SimpleZip",
             "packaging" : "http://purl.org/net/sword/package/SimpleZip"
         },
         {
             "type" : "package",
             "format" : "application/zip",
-            "url" : "http://router.jisc.ac.uk/api/v1/notification/1234567890/content",
+            "url" : "http://localhost:5998/api/v1/notification/1234567890/content",
             "packaging" : "https://pubrouter.jisc.ac.uk/FilesAndJATS"
         }
     ],
@@ -319,7 +319,7 @@ SPECIAL_CHARACTER = {
         "id": "4e8f4bef41254539a28e072c1e85d9a2",
         "metadata": {
                 "language": "eng",
-                "title": "Relationship between maxillary central incisor proportions and\u00a0facial proportions.".decode("unicode_escape"),
+                "title": b"Relationship between maxillary central incisor proportions and\\u00a0facial proportions.".decode("unicode_escape"),
                 "author": [{
                         "affiliation": "Senior Specialty Registrar, Orthodontics, Guy's Hospital, London, UK.",
                         "identifier": [{

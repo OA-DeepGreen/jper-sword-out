@@ -25,14 +25,14 @@ if __name__ == "__main__":
         app.config['DEBUG'] = False
         import pydevd
         pydevd.settrace(app.config.get('DEBUG_SERVER_HOST', 'localhost'), port=app.config.get('DEBUG_SERVER_PORT', 51234), stdoutToServer=True, stderrToServer=True)
-        print "STARTED IN REMOTE DEBUG MODE"
+        print("STARTED IN REMOTE DEBUG MODE")
 
     if not args.repo:
         parser.print_help()
         exit(0)
 
     if args.activate and args.stop:
-        print "Please specify only one of -a/--activate and -s/--stop"
+        print("Please specify only one of -a/--activate and -s/--stop")
         parser.print_help()
         exit(0)
 

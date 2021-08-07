@@ -42,5 +42,5 @@ class MockHttpLayer(HttpLayer):
         self.auth = HTTPBasicAuth(username, password)
 
     def request(self, uri, method, headers=None, payload=None):    # Note that body can be file-like
-        return MockHttpResponse(), u""
+        return MockHttpResponse(), ""
 
