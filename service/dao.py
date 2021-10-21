@@ -105,3 +105,48 @@ class SwordAccountQuery(object):
                 }
             }
         }
+
+class RepositoryDepositLogDAO(dao.ESDAO):
+    """
+    DAO for RepositoryDepositLog
+    """
+    __type__ = "sword_repository_deposit_log"
+
+    @classmethod
+    def pull_by_id(cls, repository_id):
+        """
+        Get exactly one deposit record back associated with the notification_id and the repository_id
+
+        :param notification_id:
+        :param repository_id:
+        :return:
+        """
+        q = RepositoryDepositLogQuery(repository_id)
+        obs = cls.object_query(q=q.query())
+        if len(obs) > 0:
+            return obs[0]
+
+class RepositoryDepositLogQuery(object):
+    """
+    Query generator for retrieving deposit records by notification id and repository id
+    """
+    def __init__(self, repository_id):
+        self.repository_id = repository_id
+
+    def query(self):
+        """
+        Return the query as a python dict suitable for json serialisation
+
+        :return: elasticsearch query
+        """
+        return {
+            "query" : {
+                "bool" : {
+                    "must" : {
+                        "term": {"repo.exact" : self.repository_id}
+                    }
+                }
+            },
+            "sort" : {"last_updated" : {"order" : "desc"}},
+            "size": 1
+        }

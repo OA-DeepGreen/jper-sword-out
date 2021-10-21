@@ -59,6 +59,9 @@ def process_account(acc):
     # get the current status of the repository
     repository_status = models.RepositoryStatus.pull(acc.id)
 
+    deposit_log = models.RepositoryDepositLog()
+    deposit_log.repository = acc.id
+
     # if no status record is found, this means the repository is new to 
     # sword deposit, so we need to create one
     if repository_status is None:
@@ -69,6 +72,7 @@ def process_account(acc):
         repository_status.status = "succeeding"
         repository_status.last_deposit_date = app.config.get("DEFAULT_SINCE_DATE")
         repository_status.save()
+        deposit_log.add_log('debug', "First deposit for account {x}".format(x=acc.id), None, None)
     app.logger.info("Status:{x}".format(x=repository_status.status))
     # check to see if we should be continuing with this account (may be failing)
     if repository_status.status == "failing":
@@ -94,7 +98,8 @@ def process_account(acc):
     # add (or, to be precise, substract) a safety period to 'since' aka 'status.last_deposit_date'
     delta_days = app.config.get("DEFAULT_SINCE_DELTA_DAYS")
     safe_since = dates.format(dates.parse(since) - dates.timedelta(days=delta_days))
-
+    deposit_log.add_log('info', "Finding updated notifications since {x}".format(x=safe_since), None, None)
+    deposit_done_count = 0
     # The repository status is recorded after each notification.
     # If any one notification has an error, no further deposits are made,
     # if the notification fails due to a non-specific error
@@ -106,7 +111,7 @@ def process_account(acc):
         for note in j.iterate_notifications(safe_since, repository_id=acc.id):
             try:
                 # 2018-03-08 TD : introducing a return value 'deposit_done' ....
-                deposit_done = process_notification(acc, note, since=None)
+                deposit_done, deposit_record_id = process_notification(acc, note, since=None)
                 # if the notification is successfully processed, record the new last_deposit_date
                 # status.last_deposit_date = note.analysis_date
                 # 2018-03-06 TD : 'note.analysis_date' seems to produce nasty instabilities
@@ -118,25 +123,46 @@ def process_account(acc):
                 if deposit_done is True:
                     # FIX ME. Why is deposit date set to notification created date and not the current date?
                     repository_status.last_deposit_date = note.data["created_date"]
-            except DepositException as _e:
+                    deposit_log.add_log('info', "Notification deposited", note.id, deposit_record_id)
+                    deposit_done_count += 1
+                # else:
+                #     # Too many notifications get retried. So not adding this
+                #     deposit_log.add_log('debug', "Notification not deposited", note.id, deposit_record_id)
+            except DepositException as e:
                 msg1 = "Received package deposit exception for Notification:{y} on Account:{x}. ".format(
                     x=acc.id, y=note.id)
                 msg2 = "Recording a failed deposit and ceasing further processing of notifications for this account."
                 app.logger.error(msg1 + msg2)
+                msg = "{x} {y} {z}".format(x=msg1, y=msg2, z=str(e))
+                deposit_log.add_log('error', msg, note.id, deposit_record_id)
+                if deposit_done_count > 0:
+                    deposit_log.add_log('info', "Number of successful deposits: {x}".format(x=deposit_done_count), None, None)
                 # record the failure against the status object
                 limit = app.config.get("LONG_CYCLE_RETRY_LIMIT")
                 repository_status.record_failure(limit)
                 repository_status.save()
+                deposit_log.status = repository_status.status
+                deposit_log.save()
                 return
     except client.JPERException as e:
         # save the status where we currently got to, so we can pick up again later
         repository_status.save()
-        app.logger.error("Problem while processing account for SWORD deposit: {x}".format(x=str(e)))
+        msg = "Problem while processing account for SWORD deposit: {x}".format(x=str(e))
+        app.logger.error(msg)
+        deposit_log.add_log('error', msg, None, None)
+        if deposit_done_count > 0:
+            deposit_log.add_log('info', "Number of successful deposits: {x}".format(x=deposit_done_count), None, None)
+        deposit_log.status = repository_status.status
+        deposit_log.save()
         raise e
 
     # if we get to here, all the notifications for this account have been deposited, 
     # and we can update the status and finish up
     repository_status.save()
+    if deposit_done_count > 0:
+        deposit_log.add_log('info', "Number of successful deposits: {x}".format(x=deposit_done_count), None, None)
+        deposit_log.status = "succeeding"
+        deposit_log.save()
     app.logger.info("Leaving processing account")
     return
 
@@ -189,7 +215,7 @@ def process_notification(acc, note, since):
             app.logger.debug(
                 "Notification:{y} for Account:{x} was previously deposited - skipping".format(x=acc.id, y=note.id))
             # 2018-03-08 TD : return the new flag with 'False'
-            return deposit_done
+            return deposit_done, dr.id
         # 2020-01-09 TD : check for a special case 'invalidxml' (induced by a sloppy 
         #                 OPUS4 sword implementation; fixed in v4.7.x or higher)
         # 2020-01-13 TD : ... and special case 'payloadtoolarge'
@@ -198,7 +224,7 @@ def process_notification(acc, note, since):
                 "Notification:{y} for Account:{x} was not previously deposited - SPECIAL CASE ('{z}') - skipping".format(
                     x=acc.id, y=note.id, z=dr.metadata_status))
             # 2020-01-09 TD : return also 'False' in this special case
-            return deposit_done
+            return deposit_done, dr.id
 
     # set the deposit date to current date and time
     dr.deposit_date = dates.now()
@@ -236,7 +262,7 @@ def process_notification(acc, note, since):
             if app.config.get("STORE_RESPONSE_DATA", False):
                 dr.save()
             # 2018-03-08 TD : return with the new flag (currently 'False' up to here, hopefully!
-            return deposit_done
+            return deposit_done, dr.id
 
         # first, get a copy of the file from the API into the local tmp store
         # Not raising an exception, just recording it and returning deposit not done
@@ -248,7 +274,7 @@ def process_notification(acc, note, since):
             app.logger.error(msg)
             if app.config.get("STORE_RESPONSE_DATA", False):
                 dr.save()
-            return deposit_done
+            return deposit_done, dr.id
 
         # make a copy of the tmp store for removing the content later
         tmp = store.StoreFactory.tmp()
@@ -293,7 +319,7 @@ def process_notification(acc, note, since):
                 # 2020-01-09 TD : do not kick the exception upstairs but simply return Flag!
                 if dr.metadata_status == "invalidxml" or dr.metadata_status == "payloadtoolarge":
                     # app.logger.info("Leaving processing notifs (with '{z}')".format(z=dr.metadata_status))
-                    return deposit_done
+                    return deposit_done, dr.id
 
                 msg1 = "Received package deposit exception for Notification:{y} on Account:{x}.".format(
                     x=acc.id, y=note.id)
@@ -327,7 +353,7 @@ def process_notification(acc, note, since):
             # 2020-01-09 TD : do not kick the exception upstairs but simply return Flag!
             if dr.metadata_status == "invalidxml" or dr.metadata_status == "payloadtoolarge":
                 app.logger.info("Leaving processing notifs (with '{z}')".format(z=dr.metadata_status))
-                return deposit_done
+                return deposit_done, dr.id
 
             msg1 = "Received metadata deposit exception for Notification:{y} on Account:{x}.".format(
                     x=acc.id, y=note.id)
@@ -345,7 +371,7 @@ def process_notification(acc, note, since):
             if app.config.get("STORE_RESPONSE_DATA", False):
                 dr.save()
             # 2018-03-08 TD : return with flag
-            return deposit_done
+            return deposit_done, dr.id
 
         # if we get to here, we have to deal with the content deposit
 
@@ -358,7 +384,7 @@ def process_notification(acc, note, since):
             app.logger.error(msg)
             if app.config.get("STORE_RESPONSE_DATA", False):
                 dr.save()
-            return deposit_done
+            return deposit_done, dr.id
 
         # make a copy of the tmp store for removing the content later
         tmp = store.StoreFactory.tmp()
@@ -419,7 +445,7 @@ def process_notification(acc, note, since):
         dr.save()
     app.logger.debug("Leaving processing notification")
     # 2018-03-08 TD : return with (new) flag
-    return deposit_done
+    return deposit_done, dr.id
 
 
 def _cache_content(link, note, acc):

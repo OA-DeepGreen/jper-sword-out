@@ -465,3 +465,151 @@ class DepositRecord(dataobj.DataObj, dao.DepositRecordDAO):
         cds = self.content_status in ["deposited", "none"]
         comp = self.completed_status in ["deposited", "none"]
         return mds and cds and comp
+
+
+class RepositoryDepositLog(dataobj.DataObj, dao.DepositRecordDAO):
+    """
+    Class to represent the operational deposit logs of a repository account, one for each run
+
+    Structured as follows:
+
+    ::
+
+        {
+            "id" : "<opaque id of the deposit log>",
+            "last_updated" : "<date this record was last updated>",
+            "created_date" : "<date this record was created>",
+            "repo" : "<id of the repository">,
+            "status" : "<succeeding|failing|problem>",
+            "logs": <list of log messages"
+        }
+    """
+
+    def __init__(self, raw=None):
+        """
+        Create a new instance of the RepositoryStatus object, optionally around the
+        raw python dictionary.
+
+        If supplied, the raw dictionary will be validated against the allowed structure of this
+        object, and an exception will be raised if it does not validate
+
+        :param raw: python dict object containing the metadata
+        """
+        struct = {
+            "fields": {
+                "id": {"coerce": "unicode"},
+                "last_updated": {"coerce": "utcdatetime"},
+                "created_date": {"coerce": "utcdatetime"},
+                "repo": {"coerce": "unicode"},
+                "status": {"coerce": "unicode", "allowed_values": ["succeeding", "failing", "problem"]},
+            },
+            "lists": {
+                "logs": {"contains": "object"}
+            },
+            "structs": {
+                "logs": {
+                    "fields": {
+                        "date": {"coerce": "utcdatetime"},
+                        "level": {"coerce": "utcdatetime"},
+                        "message": {"coerce": "unicode"},
+                        "notification": {"coerce": "unicode"},
+                        "deposit_record": {"coerce": "unicode"}
+                    }
+                }
+            }
+        }
+
+        self._add_struct(struct)
+        super(RepositoryStatus, self).__init__(raw=raw)
+
+    @property
+    def status(self):
+        """
+        Current status of the repository in terms of deposit (succeeding, failing, problem)
+
+        :return: the current deposit status
+        """
+        return self._get_single("status", coerce=dataobj.to_unicode())
+
+    @status.setter
+    def status(self, val):
+        """
+        Set the current status of the repository deposit
+
+        :param val: current status, must be one of succeeding, problem, failing
+        """
+        self._set_single("status", val, coerce=dataobj.to_unicode(),
+                         allowed_values=["succeeding", "problem", "failing"])
+
+    @property
+    def repository(self):
+        """
+        The repository account id this deposit was to
+
+        :return: account id
+        """
+        return self._get_single("repo", coerce=dataobj.to_unicode())
+
+    @repository.setter
+    def repository(self, val):
+        """
+        Set the repository account id
+
+        :param val: account id
+        :return:
+        """
+        self._set_single("repo", val, coerce=dataobj.to_unicode())
+
+    @property
+    def repo(self):
+        """
+        The repository account id this deposit was to
+
+        :return: account id
+        """
+        return self._get_single("repo", coerce=dataobj.to_unicode())
+
+    @repo.setter
+    def repo(self, val):
+        """
+        Set the repository account id
+
+        :param val: account id
+        :return:
+        """
+        self._set_single("repo", val, coerce=dataobj.to_unicode())
+
+    @property
+    def logs(self):
+        """
+        The list of log objects for the repository status record. The returned objects look like:
+
+        ::
+
+            {"date" : "<utc date>", "level" : "<log level>", "message": "<log message>" }
+
+        :return: List of python dict objects containing the log information
+        """
+        return self._get_list("logs")
+
+    def add_log(self, level, message, notification=None, deposit_record=None):
+        """
+        Add a log message to the deposit record
+
+        :param level: the current log level (ERROR, WARN, DEBUG)
+        :param message: the message to log
+        :param notification: the corresponding notification id
+        :param deposit_record: the corresponding deposit_record id
+        :return:
+        """
+        if message is None:
+            return
+        uc = dataobj.to_unicode()
+        obj = {
+            "date": self._coerce(dates.now(), dataobj.date_str()),
+            "level": self._coerce(level, uc),
+            "message": self._coerce(message, uc),
+            "notification": self._coerce(notification, uc),
+            "deposit_record": self._coerce(deposit_record, uc),
+        }
+        self._add_to_list("log", obj)
