@@ -14,6 +14,15 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
     """
 
     @property
+    def email(self):
+        """
+        Get the email for this account
+
+        :return: the account's email
+        """
+        return self._get_single("email", coerce=self._utf8_unicode())
+
+    @property
     def api_key(self):
         """
         Get the API key for this account

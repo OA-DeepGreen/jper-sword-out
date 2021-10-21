@@ -81,7 +81,8 @@ class AccountDAO(dao.ESDAO):
         q = SwordAccountQuery()
         all = []
         for acc in cls.scroll(q=q.query()):
-            all.append(acc)             # we need to do this because of the scroll keep-alive
+            # we need to do this because of the scroll keep-alive
+            all.append(acc)
         return all
 
 class SwordAccountQuery(object):
