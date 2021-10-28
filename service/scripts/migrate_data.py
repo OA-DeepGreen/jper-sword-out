@@ -160,10 +160,6 @@ def migrate_record(conn, logging, index_type, modify_data_func=None, **func_args
         if modify_data_func:
             ignore = modify_data_func(logging, data, **func_args)
         if not ignore:
-            if index_type == 'sword_deposit_record':
-                esprit.raw.put_mapping(conn, type=index_type, mapping=sword_deposit_record_mapping())
-            elif index_type == 'sword_repository_status':
-                esprit.raw.put_mapping(conn, type=index_type, mapping=sword_repository_status_mapping())
             mc = model_class(data)
             mc.save()
     logging.info("Finished migration of {t}".format(t=index_type))
