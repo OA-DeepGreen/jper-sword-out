@@ -9,11 +9,13 @@ query methods as required
 
 from octopus.modules.es import dao
 
+
 class RepositoryStatusDAO(dao.ESDAO):
     """
     DAO for RepositoryStatus
     """
     __type__ = "sword_repository_status"
+
 
 class DepositRecordDAO(dao.ESDAO):
     """
@@ -35,10 +37,12 @@ class DepositRecordDAO(dao.ESDAO):
         if len(obs) > 0:
             return obs[0]
 
+
 class DepositRecordQuery(object):
     """
     Query generator for retrieving deposit records by notification id and repository id
     """
+
     def __init__(self, notification_id, repository_id):
         self.notification_id = notification_id
         self.repository_id = repository_id
@@ -50,20 +54,21 @@ class DepositRecordQuery(object):
         :return: elasticsearch query
         """
         return {
-            "query" : {
-                "bool" : {
-                    "must" : [
+            "query": {
+                "bool": {
+                    "must": [
                         # {"term" : {"repository.exact" : self.repository_id}},
                         # 2018-03-07 TD : as of fix 2016-08-26 in models/sword.py
                         #                 this has to match 'repo.exact' instead!
                         #                 What a bug, good grief!
-                        {"term" : {"repo.exact" : self.repository_id}},
-                        {"term" : {"notification.exact" : self.notification_id}}
+                        {"term": {"repo.exact": self.repository_id}},
+                        {"term": {"notification.exact": self.notification_id}}
                     ]
                 }
             },
-            "sort" : {"last_updated" : {"order" : "desc"}}
+            "sort": {"last_updated": {"order": "desc"}}
         }
+
 
 class AccountDAO(dao.ESDAO):
     """
@@ -85,10 +90,12 @@ class AccountDAO(dao.ESDAO):
             all.append(acc)
         return all
 
+
 class SwordAccountQuery(object):
     """
     Query generator for accounts which have sword activated
     """
+
     def __init__(self):
         pass
 
@@ -99,12 +106,13 @@ class SwordAccountQuery(object):
         :return: elasticsearch query
         """
         return {
-            "query" : {
-                "query_string" : {
-                    "query" : "_exists_:sword.collection AND sword.collection:/.+/"
+            "query": {
+                "query_string": {
+                    "query": "_exists_:sword.collection AND sword.collection:/.+/"
                 }
             }
         }
+
 
 class RepositoryDepositLogDAO(dao.ESDAO):
     """
@@ -117,7 +125,6 @@ class RepositoryDepositLogDAO(dao.ESDAO):
         """
         Get exactly one deposit record back associated with the notification_id and the repository_id
 
-        :param notification_id:
         :param repository_id:
         :return:
         """
@@ -126,10 +133,12 @@ class RepositoryDepositLogDAO(dao.ESDAO):
         if len(obs) > 0:
             return obs[0]
 
+
 class RepositoryDepositLogQuery(object):
     """
     Query generator for retrieving deposit records by notification id and repository id
     """
+
     def __init__(self, repository_id):
         self.repository_id = repository_id
 
@@ -140,13 +149,13 @@ class RepositoryDepositLogQuery(object):
         :return: elasticsearch query
         """
         return {
-            "query" : {
-                "bool" : {
-                    "must" : {
-                        "term": {"repo.exact" : self.repository_id}
+            "query": {
+                "bool": {
+                    "must": {
+                        "term": {"repo.exact": self.repository_id}
                     }
                 }
             },
-            "sort" : {"last_updated" : {"order" : "desc"}},
+            "sort": {"last_updated": {"order": "desc"}},
             "size": 1
         }
