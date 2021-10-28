@@ -128,8 +128,9 @@ def process_account(acc):
                 else:
                     drec = models.DepositRecord.pull(deposit_record_id)
                     if drec and (drec.metadata_status == "invalidxml" or drec.metadata_status == "payloadtoolarge"):
-                        deposit_log.add_message('warn', "Notification not deposited - {x}".format(x=drec.metadata_status),
-                                            note.id, deposit_record_id)
+                        deposit_log.add_message('warn',
+                                                "Notification not deposited - {x}".format(x=drec.metadata_status),
+                                                note.id, deposit_record_id)
                 #     # Too many notifications get retried. So not adding this
                 #     deposit_log.add_message('debug', "Notification not deposited", note.id, deposit_record_id)
             except DepositException as e:
@@ -138,9 +139,10 @@ def process_account(acc):
                 msg2 = "Recording a failed deposit and ceasing further processing of notifications for this account."
                 app.logger.error(msg1 + msg2)
                 msg = "{x} {y} {z}".format(x=msg1, y=msg2, z=str(e))
-                deposit_log.add_message('error', msg, note.id, deposit_record_id)
+                deposit_log.add_message('error', msg, note.id, None)
                 if deposit_done_count > 0:
-                    deposit_log.add_message('info', "Number of successful deposits: {x}".format(x=deposit_done_count), None, None)
+                    deposit_log.add_message('info', "Number of successful deposits: {x}".format(x=deposit_done_count),
+                                            None, None)
                 # record the failure against the status object
                 limit = app.config.get("LONG_CYCLE_RETRY_LIMIT")
                 repository_status.record_failure(limit)
@@ -155,7 +157,8 @@ def process_account(acc):
         app.logger.error(msg)
         deposit_log.add_message('error', msg, None, None)
         if deposit_done_count > 0:
-            deposit_log.add_message('info', "Number of successful deposits: {x}".format(x=deposit_done_count), None, None)
+            deposit_log.add_message('info', "Number of successful deposits: {x}".format(x=deposit_done_count), None,
+                                    None)
         deposit_log.status = repository_status.status
         deposit_log.save()
         raise e
@@ -316,7 +319,7 @@ def process_notification(acc, note, since):
                 # 2020-01-09 TD : treat special case 'invalidxml' separately
                 # 2020-01-13 TD : ... and special case 'payloadtoolarge'
                 dr.content_status = "failed"
-                if not(dr.metadata_status == "invalidxml" or dr.metadata_status == "payloadtoolarge"):
+                if not (dr.metadata_status == "invalidxml" or dr.metadata_status == "payloadtoolarge"):
                     dr.metadata_status = "failed"
                 if app.config.get("STORE_RESPONSE_DATA", False):
                     dr.save()
@@ -364,7 +367,7 @@ def process_notification(acc, note, since):
                 return deposit_done, dr.id
 
             msg1 = "Received metadata deposit exception for Notification:{y} on Account:{x}.".format(
-                    x=acc.id, y=note.id)
+                x=acc.id, y=note.id)
             msg2 = "Recording a failed deposit and ceasing processing on this notification"
             app.logger.error("{x} {y}".format(x=msg1, y=msg2))
             # kick the exception upstairs for continued handling
@@ -433,7 +436,8 @@ def process_notification(acc, note, since):
             # 2018-03-08 TD : set the return flag to 'True'
             deposit_done = True
         except DepositException as e:
-            msg1 = "Received complete request exception for Notification:{y} on Account:{x}.".format(x=acc.id, y=note.id)
+            msg1 = "Received complete request exception for Notification:{y} on Account:{x}.".format(x=acc.id,
+                                                                                                     y=note.id)
             msg2 = "Recording a failed deposit and ceasing processing on this notification"
             app.logger.error("{x} {y}".format(x=msg1, y=msg2))
 
@@ -650,7 +654,8 @@ def metadata_deposit(note, acc, deposit_record, complete=False):
         try:
             conn.add_file_to_resource(receipt.edit_media, xmlhandle, "sword.xml", "text/xml")
         except Exception as e:
-            msg = "There was an error attempting to deposit atom entry as file in Eprints repository. {x}".format(x=str(e))
+            msg = "There was an error attempting to deposit atom entry as file in Eprints repository. {x}".format(
+                x=str(e))
             deposit_record.add_message('error', msg)
             app.logger.error(msg)
             raise DepositException(msg)
@@ -700,7 +705,8 @@ def package_deposit(receipt, file_handle, packaging, acc, deposit_record):
             raise DepositException(msg)
 
         # this one would append the package's files to the resource
-        # ur = conn.append(payload=file_handle, filename="deposit.zip", mimetype="application/zip", packaging=packaging, dr=receipt)
+        # ur = conn.append(payload=file_handle, filename="deposit.zip",
+        # mimetype="application/zip", packaging=packaging, dr=receipt)
 
     # storage manager instance
     sm = store.StoreFactory.get()
