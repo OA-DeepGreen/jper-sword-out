@@ -252,8 +252,6 @@ def process_notification(acc, note, since):
         dr.content_status = "none"
         dr.completed_status = "none"
 
-    url = link['url'].replace('https://www.oa-deepgreen.de', 'http://li31.int.zib.de')
-    url = link['url'].replace('https://test.oa-deepgreen.de', 'http://li31.int.zib.de')
     link['url'] = url
 
     # 2017-05-19 TD : major insert of different repository cases: OPUS4, Pubman(ESciDoc), DSpace, ???, ...
