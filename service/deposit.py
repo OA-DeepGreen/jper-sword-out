@@ -72,7 +72,7 @@ def process_account(acc):
         repository_status.status = "succeeding"
         repository_status.last_deposit_date = app.config.get("DEFAULT_SINCE_DATE")
         repository_status.save()
-        deposit_log.add_log('debug', "First deposit for account {x}".format(x=acc.id), None, None)
+        deposit_log.add_message('debug', "First deposit for account {x}".format(x=acc.id), None, None)
     app.logger.info("Status:{x}".format(x=repository_status.status))
     # check to see if we should be continuing with this account (may be failing)
     if repository_status.status == "failing":
@@ -98,7 +98,7 @@ def process_account(acc):
     # add (or, to be precise, substract) a safety period to 'since' aka 'status.last_deposit_date'
     delta_days = app.config.get("DEFAULT_SINCE_DELTA_DAYS")
     safe_since = dates.format(dates.parse(since) - dates.timedelta(days=delta_days))
-    deposit_log.add_log('info', "Finding updated notifications since {x}".format(x=safe_since), None, None)
+    deposit_log.add_message('info', "Finding updated notifications since {x}".format(x=safe_since), None, None)
     deposit_done_count = 0
     # The repository status is recorded after each notification.
     # If any one notification has an error, no further deposits are made,
@@ -123,20 +123,24 @@ def process_account(acc):
                 if deposit_done is True:
                     # FIX ME. Why is deposit date set to notification created date and not the current date?
                     repository_status.last_deposit_date = note.data["created_date"]
-                    deposit_log.add_log('info', "Notification deposited", note.id, deposit_record_id)
+                    deposit_log.add_message('info', "Notification deposited", note.id, deposit_record_id)
                     deposit_done_count += 1
-                # else:
+                else:
+                    drec = models.DepositRecord.pull(deposit_record_id)
+                    if drec and (drec.metadata_status == "invalidxml" or drec.metadata_status == "payloadtoolarge"):
+                        deposit_log.add_message('warn', "Notification not deposited - {x}".format(x=drec.metadata_status),
+                                            note.id, deposit_record_id)
                 #     # Too many notifications get retried. So not adding this
-                #     deposit_log.add_log('debug', "Notification not deposited", note.id, deposit_record_id)
+                #     deposit_log.add_message('debug', "Notification not deposited", note.id, deposit_record_id)
             except DepositException as e:
                 msg1 = "Received package deposit exception for Notification:{y} on Account:{x}. ".format(
                     x=acc.id, y=note.id)
                 msg2 = "Recording a failed deposit and ceasing further processing of notifications for this account."
                 app.logger.error(msg1 + msg2)
                 msg = "{x} {y} {z}".format(x=msg1, y=msg2, z=str(e))
-                deposit_log.add_log('error', msg, note.id, deposit_record_id)
+                deposit_log.add_message('error', msg, note.id, deposit_record_id)
                 if deposit_done_count > 0:
-                    deposit_log.add_log('info', "Number of successful deposits: {x}".format(x=deposit_done_count), None, None)
+                    deposit_log.add_message('info', "Number of successful deposits: {x}".format(x=deposit_done_count), None, None)
                 # record the failure against the status object
                 limit = app.config.get("LONG_CYCLE_RETRY_LIMIT")
                 repository_status.record_failure(limit)
@@ -149,9 +153,9 @@ def process_account(acc):
         repository_status.save()
         msg = "Problem while processing account for SWORD deposit: {x}".format(x=str(e))
         app.logger.error(msg)
-        deposit_log.add_log('error', msg, None, None)
+        deposit_log.add_message('error', msg, None, None)
         if deposit_done_count > 0:
-            deposit_log.add_log('info', "Number of successful deposits: {x}".format(x=deposit_done_count), None, None)
+            deposit_log.add_message('info', "Number of successful deposits: {x}".format(x=deposit_done_count), None, None)
         deposit_log.status = repository_status.status
         deposit_log.save()
         raise e
@@ -160,7 +164,7 @@ def process_account(acc):
     # and we can update the status and finish up
     repository_status.save()
     if deposit_done_count > 0:
-        deposit_log.add_log('info', "Number of successful deposits: {x}".format(x=deposit_done_count), None, None)
+        deposit_log.add_message('info', "Number of successful deposits: {x}".format(x=deposit_done_count), None, None)
         deposit_log.status = "succeeding"
         deposit_log.save()
     app.logger.info("Leaving processing account")
@@ -245,6 +249,10 @@ def process_notification(acc, note, since):
         dr.content_status = "none"
         dr.completed_status = "none"
 
+    url = link['url'].replace('https://www.oa-deepgreen.de', 'http://li31.int.zib.de')
+    url = link['url'].replace('https://test.oa-deepgreen.de', 'http://li31.int.zib.de')
+    link['url'] = url
+
     # 2017-05-19 TD : major insert of different repository cases: OPUS4, Pubman(ESciDoc), DSpace, ???, ...
     # 2017-07-13 TD : just added MODS as further repository format option
     # 2019-08-14 TD : added the SimpleZip as another format option to the list...
@@ -257,7 +265,7 @@ def process_notification(acc, note, since):
         # wrap up and return
         if link is None:
             msg = "No content files to deposit for Notification:{y} on Account:{x}".format(x=acc.id, y=note.id)
-            dr.add_log("debug", msg)
+            dr.add_message("debug", msg)
             app.logger.debug(msg)
             if app.config.get("STORE_RESPONSE_DATA", False):
                 dr.save()
@@ -270,7 +278,7 @@ def process_notification(acc, note, since):
             local_id, path = _cache_content(link, note, acc)
         except client.JPERException as e:
             msg = "Problem while retrieving content from store for SWORD deposit: {x}".format(x=str(e))
-            dr.add_log('error', msg)
+            dr.add_message('error', msg)
             app.logger.error(msg)
             if app.config.get("STORE_RESPONSE_DATA", False):
                 dr.save()
@@ -366,7 +374,7 @@ def process_notification(acc, note, since):
         # to deposit we can wrap up and return
         if link is None:
             msg = "No content files to deposit for Notification:{y} on Account:{x}".format(x=acc.id, y=note.id)
-            dr.add_log('debug', msg)
+            dr.add_message('debug', msg)
             app.logger.debug(msg)
             if app.config.get("STORE_RESPONSE_DATA", False):
                 dr.save()
@@ -380,7 +388,7 @@ def process_notification(acc, note, since):
             local_id, path = _cache_content(link, note, acc)
         except client.JPERException as e:
             msg = "Problem while retrieving content from store for SWORD deposit: {x}".format(x=str(e))
-            dr.add_log('error', msg)
+            dr.add_message('error', msg)
             app.logger.error(msg)
             if app.config.get("STORE_RESPONSE_DATA", False):
                 dr.save()
@@ -495,7 +503,7 @@ def deepgreen_deposit(packaging, file_handle, acc, deposit_record):
     :param deposit_record: provenance object for recording actions during this deposit process
     """
     msg = "Depositing DeepGreen Package Format:{y} for Account:{x}".format(x=acc.id, y=packaging)
-    deposit_record.add_log('info', msg)
+    deposit_record.add_message('info', msg)
     app.logger.info(msg)
 
     # create a connection object
@@ -509,7 +517,7 @@ def deepgreen_deposit(packaging, file_handle, acc, deposit_record):
                          mimetype="application/zip", packaging=packaging)
     except Exception as e:
         msg = "There was an error depositing the package to the repository. {a}".format(a=str(e))
-        deposit_record.add_log('error', msg)
+        deposit_record.add_message('error', msg)
         app.logger.error("{x}. Raising DepositException".format(x=msg))
         raise DepositException(msg)
 
@@ -531,14 +539,14 @@ def deepgreen_deposit(packaging, file_handle, acc, deposit_record):
         msg = "{x}. {y}".format(x=msg1, y=msg2)
         if app.config.get("STORE_RESPONSE_DATA", False):
             sm.store(deposit_record.id, "content_deposit.txt", source_stream=StringIO(msg))
-        deposit_record.add_log('error', msg)
+        deposit_record.add_message('error', msg)
         app.logger.error("{x} - raising DepositException".format(x=msg))
         raise DepositException(msg)
     else:
         msg = "Content deposit was successful"
         if app.config.get("STORE_RESPONSE_DATA", False):
             sm.store(deposit_record.id, "content_deposit.txt", source_stream=StringIO(msg))
-        deposit_record.add_log('info', msg)
+        deposit_record.add_message('info', msg)
         deposit_record.content_status = "deposited"
         app.logger.info(msg)
 
@@ -557,7 +565,7 @@ def metadata_deposit(note, acc, deposit_record, complete=False):
     :return: the deposit receipt from the sword client
     """
     msg = "Depositing metadata for Notification:{y} for Account:{x}".format(x=acc.id, y=note.id)
-    deposit_record.add_log('info', msg)
+    deposit_record.add_message('info', msg)
     app.logger.info(msg)
 
     # create a connection object
@@ -581,7 +589,7 @@ def metadata_deposit(note, acc, deposit_record, complete=False):
         receipt = conn.create(col_iri=acc.sword_collection, metadata_entry=entry, in_progress=ip)
     except Exception as e:
         msg = "There was an error depositing the metadata to the repository. {a}".format(a=str(e))
-        deposit_record.add_log('error', msg)
+        deposit_record.add_message('error', msg)
         app.logger.error("{x}. Raising DepositException".format(x=msg))
         raise DepositException(msg)
 
@@ -611,7 +619,7 @@ def metadata_deposit(note, acc, deposit_record, complete=False):
         msg = "{x}. {y}".format(x=msg1, y=msg2)
         if app.config.get("STORE_RESPONSE_DATA", False):
             sm.store(deposit_record.id, "metadata_deposit.txt", source_stream=StringIO(msg))
-        deposit_record.add_log('error', msg)
+        deposit_record.add_message('error', msg)
         app.logger.error("{x} - raising DepositException".format(x=msg))
         raise DepositException(msg)
     else:
@@ -619,7 +627,7 @@ def metadata_deposit(note, acc, deposit_record, complete=False):
         if app.config.get("STORE_RESPONSE_DATA", False):
             sm.store(deposit_record.id, "metadata_deposit.txt", source_stream=StringIO(msg))
         deposit_record.metadata_status = "deposited"
-        deposit_record.add_log('info', msg)
+        deposit_record.add_message('info', msg)
         app.logger.info(msg)
 
     # if this wasn't an error document, then we have a legitimate response, but we need the deposit receipt
@@ -629,7 +637,7 @@ def metadata_deposit(note, acc, deposit_record, complete=False):
             receipt = conn.get_deposit_receipt(receipt.edit)
         except Exception as e:
             msg = "There was an error attempting to retrieve deposit receipt in repository. {x}".format(x=str(e))
-            deposit_record.add_log('error', msg)
+            deposit_record.add_message('error', msg)
             app.logger.error(msg)
             raise DepositException(msg)
         if app.config.get("STORE_RESPONSE_DATA", False):
@@ -643,7 +651,7 @@ def metadata_deposit(note, acc, deposit_record, complete=False):
             conn.add_file_to_resource(receipt.edit_media, xmlhandle, "sword.xml", "text/xml")
         except Exception as e:
             msg = "There was an error attempting to deposit atom entry as file in Eprints repository. {x}".format(x=str(e))
-            deposit_record.add_log('error', msg)
+            deposit_record.add_message('error', msg)
             app.logger.error(msg)
             raise DepositException(msg)
 
@@ -662,7 +670,7 @@ def package_deposit(receipt, file_handle, packaging, acc, deposit_record):
     :param deposit_record: provenance object for recording actions during this deposit process
     """
     msg = "Depositing Package of Format:{y} for Account:{x}".format(x=acc.id, y=packaging)
-    deposit_record.add_log('info', msg)
+    deposit_record.add_message('info', msg)
     app.logger.info(msg)
 
     # create a connection object
@@ -677,7 +685,7 @@ def package_deposit(receipt, file_handle, packaging, acc, deposit_record):
             ur = conn.add_file_to_resource(receipt.edit_media, file_handle, "deposit.zip", "application/zip", packaging)
         except Exception as e:
             msg = "There was an error attempting to deposit file in repository to Eprints. {x}".format(x=str(e))
-            deposit_record.add_log('error', msg)
+            deposit_record.add_message('error', msg)
             app.logger.error("{x} - raising DepositException".format(x=msg))
             raise DepositException(msg)
     else:
@@ -687,7 +695,7 @@ def package_deposit(receipt, file_handle, packaging, acc, deposit_record):
                                                 packaging=packaging, dr=receipt)
         except Exception as e:
             msg = "There was an error attempting to deposit file in repository. {x}".format(x=str(e))
-            deposit_record.add_log('error', msg)
+            deposit_record.add_message('error', msg)
             app.logger.error("{x} - raising DepositException".format(x=msg))
             raise DepositException(msg)
 
@@ -706,7 +714,7 @@ def package_deposit(receipt, file_handle, packaging, acc, deposit_record):
         msg = "{x}. {y}".format(x=msg1, y=msg2)
         if app.config.get("STORE_RESPONSE_DATA", False):
             sm.store(deposit_record.id, "content_deposit.txt", source_stream=StringIO(msg))
-        deposit_record.add_log('error', msg)
+        deposit_record.add_message('error', msg)
         app.logger.error("{x} - raising DepositException".format(x=msg))
         raise DepositException(msg)
     else:
@@ -714,7 +722,7 @@ def package_deposit(receipt, file_handle, packaging, acc, deposit_record):
         if app.config.get("STORE_RESPONSE_DATA", False):
             sm.store(deposit_record.id, "content_deposit.txt", source_stream=StringIO(msg))
         deposit_record.content_status = "deposited"
-        deposit_record.add_log('info', msg)
+        deposit_record.add_message('info', msg)
         app.logger.info(msg)
 
     app.logger.debug("Package deposit")
@@ -730,7 +738,7 @@ def complete_deposit(receipt, acc, deposit_record):
     :param deposit_record: provenance object for recording actions during this deposit process
     """
     msg = "Sending complete request for Account:{x}".format(x=acc.id)
-    deposit_record.add_log('info', msg)
+    deposit_record.add_message('info', msg)
     app.logger.info(msg)
 
     # EPrints repositories can't handle the "complete" request
@@ -745,7 +753,7 @@ def complete_deposit(receipt, acc, deposit_record):
             cr = conn.complete_deposit(dr=receipt)
         except Exception as e:
             msg = "There was an error attempting to complete deposit in repository. {x}".format(x=str(e))
-            deposit_record.add_log('error', msg)
+            deposit_record.add_message('error', msg)
             app.logger.error("{x} - raising DepositException".format(x=msg))
             raise DepositException(msg)
 
@@ -760,7 +768,7 @@ def complete_deposit(receipt, acc, deposit_record):
             x=acc.repository_software)
         if app.config.get("STORE_RESPONSE_DATA", False):
             sm.store(deposit_record.id, "complete_deposit.txt", source_stream=StringIO(msg))
-        deposit_record.add_log('debug', msg)
+        deposit_record.add_message('debug', msg)
     elif isinstance(cr, sword2.Error_Document):
         deposit_record.completed_status = "failed"
         msg1 = "Received error document for complete request for the repository."
@@ -768,14 +776,14 @@ def complete_deposit(receipt, acc, deposit_record):
         msg = "{x}. {y}".format(x=msg1, y=msg2)
         if app.config.get("STORE_RESPONSE_DATA", False):
             sm.store(deposit_record.id, "complete_deposit.txt", source_stream=StringIO(msg))
-        deposit_record.add_log('error', msg)
+        deposit_record.add_message('error', msg)
         app.logger.error("{x} - raising DepositException".format(x=msg))
         raise DepositException(msg)
     else:
         msg = "Complete request was successful"
         if app.config.get("STORE_RESPONSE_DATA", False):
             sm.store(deposit_record.id, "complete_deposit.txt", source_stream=StringIO(msg))
-        deposit_record.add_log('info', msg)
+        deposit_record.add_message('info', msg)
         deposit_record.completed_status = "deposited"
         app.logger.info(msg)
 
