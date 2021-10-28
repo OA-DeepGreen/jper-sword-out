@@ -520,7 +520,7 @@ class RepositoryDepositLog(dataobj.DataObj, dao.DepositRecordDAO):
         }
 
         self._add_struct(struct)
-        super(RepositoryStatus, self).__init__(raw=raw)
+        super(RepositoryDepositLog, self).__init__(raw=raw)
 
     @property
     def status(self):
