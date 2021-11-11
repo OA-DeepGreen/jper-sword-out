@@ -252,16 +252,18 @@ def process_notification(acc, note, since):
         dr.content_status = "none"
         dr.completed_status = "none"
 
-    link['url'] = url
-
     # 2017-05-19 TD : major insert of different repository cases: OPUS4, Pubman(ESciDoc), DSpace, ???, ...
     # 2017-07-13 TD : just added MODS as further repository format option
     # 2019-08-14 TD : added the SimpleZip as another format option to the list...
-    if "opus4" in str(packaging).lower() or \
-            "escidoc" in str(packaging).lower() or \
-            "dspace" in str(packaging).lower() or \
-            "mods" in str(packaging).lower() or \
-            "simple" in str(packaging).lower():
+    deposit_method = 'single zip file'
+    if acc.sword_deposit_method == 'individual files':
+        deposit_method = acc.sword_deposit_method
+    # if "opus4" in str(packaging).lower() or \
+    #         "escidoc" in str(packaging).lower() or \
+    #         "dspace" in str(packaging).lower() or \
+    #         "mods" in str(packaging).lower() or \
+    #         "simple" in str(packaging).lower():
+    if deposit_method == 'single zip file':
         # this should never happen, but just in case, if there's no content to deposit we can
         # wrap up and return
         if link is None:
