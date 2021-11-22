@@ -14,6 +14,15 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
     """
 
     @property
+    def email(self):
+        """
+        Get the email for this account
+
+        :return: the account's email
+        """
+        return self._get_single("email", coerce=self._utf8_unicode())
+
+    @property
     def api_key(self):
         """
         Get the API key for this account
@@ -40,45 +49,55 @@ class Account(dataobj.DataObj, dao.AccountDAO, UserMixin):
         """
         self._add_to_list("packaging", val, coerce=self._utf8_unicode(), unique=True)
 
-    def add_sword_credentials(self, username, password, collection):
+    @property
+    def sword_collection(self):
+        return self._get_single("sword.collection", coerce=self._utf8_unicode())
+
+    @sword_collection.setter
+    def sword_collection(self, val):
+        self._set_single("sword.collection", val, coerce=self._utf8_unicode())
+
+    @property
+    def sword_username(self):
+        return self._get_single("sword.username", coerce=self._utf8_unicode())
+
+    @sword_username.setter
+    def sword_username(self, val):
+        self._set_single("sword.username", val, coerce=self._utf8_unicode())
+
+    @property
+    def sword_password(self):
+        return self._get_single("sword.password", coerce=self._utf8_unicode())
+
+    @sword_password.setter
+    def sword_password(self, val):
+        self._set_single("sword.password", val, coerce=self._utf8_unicode())
+
+    @property
+    def sword_deposit_method(self):
+        return self._get_single("sword.deposit_method", coerce=self._utf8_unicode())
+
+    @sword_deposit_method.setter
+    def sword_deposit_method(self, val):
+        if val.strip().lower() not in ["single zip file", "individual files"]:
+            raise dataobj.DataSchemaException("Sword deposit method must only contain " +
+                                              "'single zip file' or 'individual files'")
+        self._set_single("sword.deposit_method", val.strip().lower(), coerce=self._utf8_unicode())
+
+    def add_sword_credentials(self, username, password, collection, deposit_method):
         """
         Add the sword credentials for the user
 
         :param username: username to deposit to repository as
         :param password: password of repository user account
         :param collection: collection url to deposit to
+        :param deposit_method: the method used to make a deposit
         :return:
         """
-        self._set_single("sword.username", username, coerce=self._utf8_unicode())
-        self._set_single("sword.password", password, coerce=self._utf8_unicode())
-        self._set_single("sword.collection", collection, coerce=self._utf8_unicode())
-
-    @property
-    def sword_collection(self):
-        """
-        Get the url of the collection in the repository to deposit to
-
-        :return: collection url
-        """
-        return self._get_single("sword.collection", coerce=self._utf8_unicode())
-
-    @property
-    def sword_username(self):
-        """
-        Get the username of the repository account to deposit as
-
-        :return: username
-        """
-        return self._get_single("sword.username", coerce=self._utf8_unicode())
-
-    @property
-    def sword_password(self):
-        """
-        Get the password for the repository user to deposit as
-
-        :return: password
-        """
-        return self._get_single("sword.password", coerce=self._utf8_unicode())
+        self.sword_username = username
+        self.sword_password = password
+        self.sword_collection = collection
+        self.sword_deposit_method = deposit_method
 
     @property
     def repository_software(self):
