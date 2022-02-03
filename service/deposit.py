@@ -102,9 +102,7 @@ def process_account(acc):
     deposit_done_count = 0
     # The repository status is recorded after each notification.
     # If any one notification has an error, no further deposits are made,
-    # if the notification fails due to a non-specific error
-    # What should the status and last deposit date be?
-    # FIX ME: Is the above logic correct?
+    # if the notification fails due to a non-specific error, what should the status and last deposit date be?
     j = client.JPER(api_key=acc.api_key)
     try:
         # 2018-03-14 TD : use now the safety net safe_since instead
@@ -125,12 +123,14 @@ def process_account(acc):
                     repository_status.last_deposit_date = note.data["created_date"]
                     deposit_log.add_message('info', "Notification deposited", note.id, deposit_record_id)
                     deposit_done_count += 1
+                    repository_status.status = "succeeding"
                 else:
                     drec = models.DepositRecord.pull(deposit_record_id)
                     if drec and (drec.metadata_status == "invalidxml" or drec.metadata_status == "payloadtoolarge"):
                         deposit_log.add_message('warn',
                                                 "Notification not deposited - {x}".format(x=drec.metadata_status),
                                                 note.id, deposit_record_id)
+                    repository_status.status = "succeeding"
                 #     # Too many notifications get retried. So not adding this
                 #     deposit_log.add_message('debug', "Notification not deposited", note.id, deposit_record_id)
             except DepositException as e:
@@ -210,13 +210,7 @@ def process_notification(acc, note, since):
     # this gets the most recent deposit record for this id pair
     dr = models.DepositRecord.pull_by_ids(note.id, acc.id)
 
-    if dr is None:
-        # make a deposit record object to record the events
-        dr = models.DepositRecord()
-        dr.repository = acc.id
-        dr.notification = note.id
-        dr.id = dr.makeid()
-    else:
+    if dr:
         # was this a successful deposit?  if so, don't re-run
         if dr.was_successful():
             app.logger.debug(
@@ -233,6 +227,12 @@ def process_notification(acc, note, since):
             # 2020-01-09 TD : return also 'False' in this special case
             return deposit_done, dr.id
 
+    # Create a new deposit record - don't overwrite existing one
+    # make a deposit record object to record the events
+    dr = models.DepositRecord()
+    dr.repository = acc.id
+    dr.notification = note.id
+    dr.id = dr.makeid()
     # set the deposit date to current date and time
     dr.deposit_date = dates.now()
 
