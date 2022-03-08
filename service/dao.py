@@ -159,3 +159,71 @@ class RepositoryDepositLogQuery(object):
             "sort": {"last_updated": {"order": "desc"}},
             "size": 1
         }
+
+
+class RequestNotification(dao.ESDAO):
+    """
+    DAO for RequestNotification
+    """
+
+    __type__ = 'request'
+    """ The index type to use to store these objects """
+
+    @classmethod
+    def pull_by_repository_status(cls, repo_id, status, size=None, page=0):
+        """
+        Get all request notifications matching repository and status
+
+        :param repo_id:
+        :param status:
+        :param size:
+        :param page:
+        :return:
+        """
+        q = RequestNotificationQuery(None, repo_id, status, size, page)
+        obs = cls.query(q=q.query())
+        if len(obs) > 0:
+            return obs
+
+
+class RequestNotificationQuery(object):
+    """
+    Query generator for retrieving deposit records by notification id and repository id
+    """
+
+    def __init__(self, notification_id, repository_id, status=None, size=None, page=None):
+        self.notification_id = notification_id
+        self.repository_id = repository_id
+        self.status = status
+        self.size = 10
+        if isinstance(size, int):
+            self.size = size
+        self.page = 0
+        if isinstance(page, int):
+            self.page = page
+
+    def query(self):
+        """
+        Return the query as a python dict suitable for json serialisation
+
+        :return: elasticsearch query
+        """
+        q = {
+            "query": {
+                "bool": {
+                    "must": []
+                }
+            },
+            "sort": {"last_updated": {"order": "desc"}}
+        }
+        if self.notification_id:
+            q["query"]["bool"]["must"].append({"term": {"notification_id.exact": self.notification_id}})
+        if self.repository_id:
+            q["query"]["bool"]["must"].append({"term": {"account_id.exact": self.repository_id}})
+        if self.status:
+            q["query"]["bool"]["must"].append({"term": {"status.exact": self.status}})
+        if self.size:
+            q['size'] = self.size
+        if self.page:
+            q['from'] = self.page
+        return q
