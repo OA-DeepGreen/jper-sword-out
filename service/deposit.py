@@ -182,7 +182,7 @@ def process_notification_requests(acc):
                                                                                          check_deposit_record,
                                                                                          repository_status,
                                                                                          deposit_log,
-                                                                                         deposit_done_count)
+                                                                                         deposit_done_count, request_note=rn)
             if not status:
                 # the deposit log and repository status are saved at this point
                 return
@@ -210,9 +210,11 @@ def process_notification_requests(acc):
     return
 
 
-def attempt_deposit(acc, note, check_deposit_record, repository_status, deposit_log, deposit_done_count):
+def attempt_deposit(acc, note, check_deposit_record, repository_status, deposit_log, deposit_done_count,
+                    request_note=None):
     status = True
     try:
+        deposit_record_id = None
         # 2018-03-08 TD : introducing a return value 'deposit_done' ....
         deposit_done, deposit_record_id = process_notification(acc, note, since=None,
                                                                check_deposit_record=check_deposit_record)
@@ -231,7 +233,16 @@ def attempt_deposit(acc, note, check_deposit_record, repository_status, deposit_
             repository_status.status = "succeeding"
             if not check_deposit_record:
                 deposit_log.add_message('debug', "Notification not deposited", note.id, deposit_record_id)
+        if request_note:
+            request_note.status = 'sent'
+            request_note.deposit_id = deposit_record_id
+            request_note.save()
     except DepositException as e:
+        if request_note:
+            request_note.status = 'failed'
+            if deposit_record_id:
+                request_note.deposit_id = deposit_record_id
+            request_note.save()
         msg1 = "Received package deposit exception for Notification:{y} on Account:{x}. ".format(
             x=acc.id, y=note.id)
         msg2 = "Recording a failed deposit and ceasing further processing of notifications for this account."
