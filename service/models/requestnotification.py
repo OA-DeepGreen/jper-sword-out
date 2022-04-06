@@ -103,10 +103,10 @@ class RequestNotification(dataobj.DataObj, dao.RequestNotification):
         self._set_single("status", val, coerce=dataobj.to_unicode(), allowed_values=["queued", "failed", "sent"])
 
     @classmethod
-    def iterate_request_notification(cls, repository_id, status='queued', page_size=100):
+    def iterate_request_notification(cls, repository_id, status='queued', size=100):
         page = 1
         while True:
-            rn = cls.pull_by_repository_status(repository_id, status=status, page=page, page_size=page_size)
+            rn = cls.pull_by_repository_status(repository_id, status=status, page=page, size=size)
             total = rn.get('hits',{}).get('total',{}).get('value', 0)
             if len(rn) == 0:
                 break
@@ -114,6 +114,6 @@ class RequestNotification(dataobj.DataObj, dao.RequestNotification):
                 raw_data = r.get('_source', {})
                 if raw_data:
                     yield RequestNotification(raw_data)
-            if page * page_size >= total:
+            if page * size >= total:
                 break
             page += 1
