@@ -104,16 +104,16 @@ class RequestNotification(dataobj.DataObj, dao.RequestNotification):
 
     @classmethod
     def iterate_request_notification(cls, repository_id, status='queued', size=100):
-        page = 1
+        from_count = 0
         while True:
-            rn = cls.pull_by_repository_status(repository_id, status=status, page=page, size=size)
+            rn = cls.pull_by_repository_status(repository_id, status=status, from_count=from_count, size=size)
             total = rn.get('hits',{}).get('total',{}).get('value', 0)
-            if len(rn) == 0:
+            if len(rn.get('hits', {}).get('hits', [])) == 0:
                 break
             for r in rn.get('hits', {}).get('hits', []):
                 raw_data = r.get('_source', {})
                 if raw_data:
                     yield RequestNotification(raw_data)
-            if page * size >= total:
+            from_count += size
+            if from_count >= total:
                 break
-            page += 1

@@ -170,17 +170,17 @@ class RequestNotification(dao.ESDAO):
     """ The index type to use to store these objects """
 
     @classmethod
-    def pull_by_repository_status(cls, repo_id, status, size=None, page=0):
+    def pull_by_repository_status(cls, repo_id, status, size=100, from_count=0):
         """
         Get all request notifications matching repository and status
 
         :param repo_id:
         :param status:
         :param size:
-        :param page:
+        :param from_count:
         :return:
         """
-        q = RequestNotificationQuery(None, repo_id, status, size, page)
+        q = RequestNotificationQuery(None, repo_id, status, size, from_count)
         obs = cls.query(q=q.query())
         if len(obs) > 0:
             return obs
@@ -191,16 +191,16 @@ class RequestNotificationQuery(object):
     Query generator for retrieving deposit records by notification id and repository id
     """
 
-    def __init__(self, notification_id, repository_id, status=None, size=None, page=None):
+    def __init__(self, notification_id, repository_id, status=None, size=100, from_count=0):
         self.notification_id = notification_id
         self.repository_id = repository_id
         self.status = status
-        self.size = 10
-        if isinstance(size, int):
-            self.size = size
-        self.page = 0
-        if isinstance(page, int):
-            self.page = page
+        self.size = 100
+        if isinstance(size, int) or (isinstance(size, str) and size.isnumeric()):
+            self.size = int(size)
+        self.from_count = 0
+        if isinstance(from_count, int) or (isinstance(from_count, str) and from_count.isnumeric()):
+            self.from_count = int(from_count)
 
     def query(self):
         """
@@ -224,6 +224,6 @@ class RequestNotificationQuery(object):
             q["query"]["bool"]["must"].append({"term": {"status.exact": self.status}})
         if self.size:
             q['size'] = self.size
-        if self.page:
-            q['from'] = self.page
+        if self.from_count:
+            q['from'] = self.from_count
         return q
