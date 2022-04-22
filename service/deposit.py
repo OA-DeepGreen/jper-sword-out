@@ -34,6 +34,12 @@ def run(fail_on_error=True):
     # process each account
     for acc in accs:
         try:
+            process_notification_requests(acc)
+        except client.JPERException as e:
+            app.logger.error("Problem while processing deposit requests for account for SWORD deposit: {x}".format(x=str(e)))
+            if fail_on_error:
+                raise e
+        try:
             process_account(acc)
         except client.JPERException as e:
             app.logger.error("Problem while processing account for SWORD deposit: {x}".format(x=str(e)))
@@ -55,25 +61,21 @@ def process_account(acc):
     :param acc: the account whose notifications to process
     """
     app.logger.info("Processing Account:{x}".format(x=acc.id))
-
-    # get the current status of the repository
-    repository_status = models.RepositoryStatus.pull(acc.id)
-
+    j = client.JPER(api_key=acc.api_key)
     deposit_log = models.RepositoryDepositLog()
     deposit_log.repository = acc.id
 
-    # if no status record is found, this means the repository is new to 
+    # get the current status of the repository
+    repository_status = models.RepositoryStatus.pull(acc.id)
+    # if no status record is found, this means the repository is new to
     # sword deposit, so we need to create one
     if repository_status is None:
         app.logger.debug(
             "Account:{x} has not previously deposited - creating repository status record".format(x=acc.id))
-        repository_status = models.RepositoryStatus()
-        repository_status.id = acc.id
-        repository_status.status = "succeeding"
-        repository_status.last_deposit_date = app.config.get("DEFAULT_SINCE_DATE")
-        repository_status.save()
+        repository_status = create_repo_status(acc)
         deposit_log.add_message('debug', "First deposit for account {x}".format(x=acc.id), None, None)
     app.logger.info("Status:{x}".format(x=repository_status.status))
+
     # check to see if we should be continuing with this account (may be failing)
     if repository_status.status == "failing":
         app.logger.debug(
@@ -98,57 +100,25 @@ def process_account(acc):
     # add (or, to be precise, substract) a safety period to 'since' aka 'status.last_deposit_date'
     delta_days = app.config.get("DEFAULT_SINCE_DELTA_DAYS")
     safe_since = dates.format(dates.parse(since) - dates.timedelta(days=delta_days))
+
+    # Find notifications for deposit
     deposit_log.add_message('info', "Finding updated notifications since {x}".format(x=safe_since), None, None)
     deposit_done_count = 0
     # The repository status is recorded after each notification.
     # If any one notification has an error, no further deposits are made,
-    # if the notification fails due to a non-specific error
-    # What should the status and last deposit date be?
-    # FIX ME: Is the above logic correct?
-    j = client.JPER(api_key=acc.api_key)
+    # if the notification fails due to a non-specific error, what should the status and last deposit date be?
+
     try:
         # 2018-03-14 TD : use now the safety net safe_since instead
         for note in j.iterate_notifications(safe_since, repository_id=acc.id):
-            try:
-                # 2018-03-08 TD : introducing a return value 'deposit_done' ....
-                deposit_done, deposit_record_id = process_notification(acc, note, since=None)
-                # if the notification is successfully processed, record the new last_deposit_date
-                # status.last_deposit_date = note.analysis_date
-                # 2018-03-06 TD : 'note.analysis_date' seems to produce nasty instabilities
-                #                 and, most importantly, missed notifications.
-                #                 Here, we try 'note.created_date' instead.  Might cause
-                #                 a bit of double working, but hey, it will be checked
-                #                 in 'process_notification(...)' anyway.
-                # status.last_deposit_date = note.created_date
-                if deposit_done is True:
-                    # FIX ME. Why is deposit date set to notification created date and not the current date?
-                    repository_status.last_deposit_date = note.data["created_date"]
-                    deposit_log.add_message('info', "Notification deposited", note.id, deposit_record_id)
-                    deposit_done_count += 1
-                else:
-                    drec = models.DepositRecord.pull(deposit_record_id)
-                    if drec and (drec.metadata_status == "invalidxml" or drec.metadata_status == "payloadtoolarge"):
-                        deposit_log.add_message('warn',
-                                                "Notification not deposited - {x}".format(x=drec.metadata_status),
-                                                note.id, deposit_record_id)
-                #     # Too many notifications get retried. So not adding this
-                #     deposit_log.add_message('debug', "Notification not deposited", note.id, deposit_record_id)
-            except DepositException as e:
-                msg1 = "Received package deposit exception for Notification:{y} on Account:{x}. ".format(
-                    x=acc.id, y=note.id)
-                msg2 = "Recording a failed deposit and ceasing further processing of notifications for this account."
-                app.logger.error(msg1 + msg2)
-                msg = "{x} {y} {z}".format(x=msg1, y=msg2, z=str(e))
-                deposit_log.add_message('error', msg, note.id, None)
-                if deposit_done_count > 0:
-                    deposit_log.add_message('info', "Number of successful deposits: {x}".format(x=deposit_done_count),
-                                            None, None)
-                # record the failure against the status object
-                limit = app.config.get("LONG_CYCLE_RETRY_LIMIT")
-                repository_status.record_failure(limit)
-                repository_status.save()
-                deposit_log.status = repository_status.status
-                deposit_log.save()
+            check_deposit_record = True
+            status, repository_status, deposit_log, deposit_done_count = attempt_deposit(acc, note,
+                                                                                         check_deposit_record,
+                                                                                         repository_status,
+                                                                                         deposit_log,
+                                                                                         deposit_done_count)
+            if not status:
+                # the deposit log and repository status are saved at this point
                 return
     except client.JPERException as e:
         # save the status where we currently got to, so we can pick up again later
@@ -174,7 +144,134 @@ def process_account(acc):
     return
 
 
-def process_notification(acc, note, since):
+def process_notification_requests(acc):
+    """
+    Retrieve the notification requests in JPER associated with this account and deposit those notifications
+    to the sword-enabled repository
+
+    The account status will be ignored and a deposit will be attempted
+
+    :param acc: the account whose request notifications to process
+    """
+    app.logger.info("Depositing requested notifications for Account:{x}".format(x=acc.id))
+
+    j = client.JPER(api_key=acc.api_key)
+    deposit_log = models.RepositoryDepositLog()
+    deposit_log.repository = acc.id
+    repository_status = models.RepositoryStatus.pull(acc.id)
+    # if no status record is found, this means the repository is new to
+    # sword deposit, so we need to create one
+    if repository_status is None:
+        app.logger.debug(
+            "Account:{x} has not previously deposited - creating repository status record".format(x=acc.id))
+        repository_status = create_repo_status(acc)
+        deposit_log.add_message('debug', "First deposit for account {x}".format(x=acc.id), None, None)
+
+
+    deposit_log.add_message('info', "Finding request deposit notifications", None, None)
+    deposit_done_count = 0
+    # The repository status is recorded after each notification.
+    # If any one notification has an error, no further deposits are made,
+    # if the notification fails due to a non-specific error, what should the status and last deposit date be?
+    try:
+        # Get request notifications for this account
+        for rn in models.RequestNotification.iterate_request_notification(acc.id):
+            note = j.get_notification(rn.notification_id)
+            check_deposit_record = False
+            status, repository_status, deposit_log, deposit_done_count = attempt_deposit(acc, note,
+                                                                                         check_deposit_record,
+                                                                                         repository_status,
+                                                                                         deposit_log,
+                                                                                         deposit_done_count, request_note=rn)
+            if not status:
+                # the deposit log and repository status are saved at this point
+                return
+    except client.JPERException as e:
+        # save the status where we currently got to, so we can pick up again later
+        repository_status.save()
+        msg = "Problem while processing account for SWORD deposit: {x}".format(x=str(e))
+        app.logger.error(msg)
+        deposit_log.add_message('error', msg, None, None)
+        if deposit_done_count > 0:
+            deposit_log.add_message('info', "Number of successful deposits: {x}".format(x=deposit_done_count), None,
+                                    None)
+        deposit_log.status = repository_status.status
+        deposit_log.save()
+        raise e
+
+    # if we get to here, all the notifications for this account have been deposited,
+    # and we can update the status and finish up
+    repository_status.save()
+    if deposit_done_count > 0:
+        deposit_log.add_message('info', "Number of successful deposits: {x}".format(x=deposit_done_count), None, None)
+        deposit_log.status = "succeeding"
+        deposit_log.save()
+    app.logger.info("Leaving processing account")
+    return
+
+
+def attempt_deposit(acc, note, check_deposit_record, repository_status, deposit_log, deposit_done_count,
+                    request_note=None):
+    status = True
+    try:
+        deposit_record_id = None
+        # 2018-03-08 TD : introducing a return value 'deposit_done' ....
+        deposit_done, deposit_record_id = process_notification(acc, note, since=None,
+                                                               check_deposit_record=check_deposit_record)
+        if deposit_done is True:
+            # FIX ME. Why is deposit date set to notification created date and not the current date?
+            repository_status.last_deposit_date = note.data["created_date"]
+            deposit_log.add_message('info', "Notification deposited", note.id, deposit_record_id)
+            deposit_done_count += 1
+            repository_status.status = "succeeding"
+        else:
+            drec = models.DepositRecord.pull(deposit_record_id)
+            if drec and (drec.metadata_status == "invalidxml" or drec.metadata_status == "payloadtoolarge"):
+                deposit_log.add_message('warn',
+                                        "Notification not deposited - {x}".format(x=drec.metadata_status),
+                                        note.id, deposit_record_id)
+            repository_status.status = "succeeding"
+            if not check_deposit_record:
+                deposit_log.add_message('debug', "Notification not deposited", note.id, deposit_record_id)
+        if request_note:
+            request_note.status = 'sent'
+            request_note.deposit_id = deposit_record_id
+            request_note.save()
+    except DepositException as e:
+        if request_note:
+            request_note.status = 'failed'
+            if deposit_record_id:
+                request_note.deposit_id = deposit_record_id
+            request_note.save()
+        msg1 = "Received package deposit exception for Notification:{y} on Account:{x}. ".format(
+            x=acc.id, y=note.id)
+        msg2 = "Recording a failed deposit and ceasing further processing of notifications for this account."
+        app.logger.error(msg1 + msg2)
+        msg = "{x} {y} {z}".format(x=msg1, y=msg2, z=str(e))
+        deposit_log.add_message('error', msg, note.id, None)
+        if deposit_done_count > 0:
+            deposit_log.add_message('info', "Number of successful deposits: {x}".format(x=deposit_done_count),
+                                    None, None)
+        # record the failure against the status object
+        limit = app.config.get("LONG_CYCLE_RETRY_LIMIT")
+        repository_status.record_failure(limit)
+        repository_status.save()
+        deposit_log.status = repository_status.status
+        deposit_log.save()
+        status = False
+    return status, repository_status, deposit_log, deposit_done_count
+
+
+def create_repo_status(acc):
+    repository_status = models.RepositoryStatus()
+    repository_status.id = acc.id
+    repository_status.status = "succeeding"
+    repository_status.last_deposit_date = app.config.get("DEFAULT_SINCE_DATE")
+    repository_status.save()
+    return repository_status
+
+
+def process_notification(acc, note, since=None, check_deposit_record=True):
     """
     For the given account and notification, deliver the notification to 
     the sword-enabled repository.
@@ -187,6 +284,7 @@ def process_notification(acc, note, since):
     :param acc: user account of repository
     :param note: notification to be deposited
     :param since: earliest date which the current set of requests is made from.
+    :param check_deposit_record: Flag to deposit without checking for existing deposit
     :return: flag (boolean) to indicated a successful deposit
     """
     app.logger.debug("Processing Notification:{y} for Account:{x}".format(x=acc.id, y=note.id))
@@ -208,31 +306,31 @@ def process_notification(acc, note, since):
     # 2018-03-07 TD : completely taking out the if-clause;
     #                 therefore, testing every call for possible doubles!
     # this gets the most recent deposit record for this id pair
-    dr = models.DepositRecord.pull_by_ids(note.id, acc.id)
+    if check_deposit_record:
+        dr = models.DepositRecord.pull_by_ids(note.id, acc.id)
+        if dr:
+            # was this a successful deposit?  if so, don't re-run
+            if dr.was_successful():
+                app.logger.debug(
+                    "Notification:{y} for Account:{x} was previously deposited - skipping".format(x=acc.id, y=note.id))
+                # 2018-03-08 TD : return the new flag with 'False'
+                return deposit_done, dr.id
+            # 2020-01-09 TD : check for a special case 'invalidxml' (induced by a sloppy 
+            #                 OPUS4 sword implementation; fixed in v4.7.x or higher)
+            # 2020-01-13 TD : ... and special case 'payloadtoolarge'
+            if dr.metadata_status == "invalidxml" or dr.metadata_status == "payloadtoolarge":
+                app.logger.debug(
+                    "Notification:{y} for Account:{x} was not previously deposited - SPECIAL CASE ('{z}') - skipping".format(
+                        x=acc.id, y=note.id, z=dr.metadata_status))
+                # 2020-01-09 TD : return also 'False' in this special case
+                return deposit_done, dr.id
 
-    if dr is None:
-        # make a deposit record object to record the events
-        dr = models.DepositRecord()
-        dr.repository = acc.id
-        dr.notification = note.id
-        dr.id = dr.makeid()
-    else:
-        # was this a successful deposit?  if so, don't re-run
-        if dr.was_successful():
-            app.logger.debug(
-                "Notification:{y} for Account:{x} was previously deposited - skipping".format(x=acc.id, y=note.id))
-            # 2018-03-08 TD : return the new flag with 'False'
-            return deposit_done, dr.id
-        # 2020-01-09 TD : check for a special case 'invalidxml' (induced by a sloppy 
-        #                 OPUS4 sword implementation; fixed in v4.7.x or higher)
-        # 2020-01-13 TD : ... and special case 'payloadtoolarge'
-        if dr.metadata_status == "invalidxml" or dr.metadata_status == "payloadtoolarge":
-            app.logger.debug(
-                "Notification:{y} for Account:{x} was not previously deposited - SPECIAL CASE ('{z}') - skipping".format(
-                    x=acc.id, y=note.id, z=dr.metadata_status))
-            # 2020-01-09 TD : return also 'False' in this special case
-            return deposit_done, dr.id
-
+    # Create a new deposit record - don't overwrite existing one
+    # make a deposit record object to record the events
+    dr = models.DepositRecord()
+    dr.repository = acc.id
+    dr.notification = note.id
+    dr.id = dr.makeid()
     # set the deposit date to current date and time
     dr.deposit_date = dates.now()
 
