@@ -111,6 +111,8 @@ def process_account(acc):
     try:
         # 2018-03-14 TD : use now the safety net safe_since instead
         for note in j.iterate_notifications(safe_since, repository_id=acc.id):
+            if not note:
+                continue
             check_deposit_record = True
             status, repository_status, deposit_log, deposit_done_count = attempt_deposit(acc, note,
                                                                                          check_deposit_record,
@@ -177,6 +179,10 @@ def process_notification_requests(acc):
         # Get request notifications for this account
         for rn in models.RequestNotification.iterate_request_notification(acc.id):
             note = j.get_notification(rn.notification_id)
+            if not note:
+                rn.status = 'failed'
+                rn.save()
+                continue
             check_deposit_record = False
             status, repository_status, deposit_log, deposit_done_count = attempt_deposit(acc, note,
                                                                                          check_deposit_record,
