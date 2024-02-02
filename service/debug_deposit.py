@@ -63,7 +63,4 @@ def debug_run():
                 with open(fname2, "a") as f2:
                     f2.write(f"{note.id},{date_created},{has_deposit_record},{dr_id},{will_deposit}\n")
         with open(fname, "a") as f:
-            f.write(
-                f"{acc.id}, {status}, {try_deposit}, {since}, {safe_since}, {number_of_notifications}, {number_to_deposit}\n")
-
-
+            f.write(f"{acc.id}, {status}, {try_deposit}, {since}, {safe_since}, {number_of_notifications}, {number_to_deposit}\n")
