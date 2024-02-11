@@ -25,7 +25,7 @@ def debug_run():
         j = client.JPER(api_key=acc.api_key)
         fname2 = os.path.join(path, f"{acc.id}.csv")
         with open(fname2, "a") as f2:
-            f2.write(f"note_id,date_created,has_deposit_record,dr_id,will_deposit\n")
+            f2.write(f"note_id,doi,date_created,has_deposit_record,dr_id,will_deposit\n")
         repository_status = models.RepositoryStatus.pull(acc.id)
         status = "new - succeeding"
         since = app.config.get("DEFAULT_SINCE_DATE")
@@ -43,6 +43,7 @@ def debug_run():
         if try_deposit:
             for note in j.iterate_notifications(safe_since, repository_id=acc.id):
                 date_created = note.data["created_date"]
+                doi = _get_note_doi(note)
                 has_deposit_record = False
                 will_deposit = True
                 dr_id = ""
@@ -61,7 +62,7 @@ def debug_run():
                 else:
                     number_to_deposit += 1
                 with open(fname2, "a") as f2:
-                    f2.write(f"{note.id},{date_created},{has_deposit_record},{dr_id},{will_deposit}\n")
+                    f2.write(f"{note.id},{doi},{date_created},{has_deposit_record},{dr_id},{will_deposit}\n")
         with open(fname, "a") as f:
             f.write(f"{acc.id}, {status}, {try_deposit}, {since}, {safe_since}, {number_of_notifications}, {number_to_deposit}\n")
 
@@ -90,6 +91,7 @@ def debug_run_for_account(account_id):
     number_to_deposit = 0
     for note in j.iterate_notifications(safe_since, repository_id=acc.id):
         date_created = note.data["created_date"]
+        doi = _get_note_doi(note)
         has_deposit_record = False
         will_deposit = True
         dr_id = ""
@@ -108,6 +110,12 @@ def debug_run_for_account(account_id):
         else:
             number_to_deposit += 1
         with open(fname2, "a") as f2:
-            f2.write(f"{note.id},{date_created},{has_deposit_record},{dr_id},{will_deposit}\n")
+            f2.write(f"{note.id},{doi},{date_created},{has_deposit_record},{dr_id},{will_deposit}\n")
 
 
+def _get_note_doi(note):
+    doi = []
+    for id in note.identifiers:
+        if id.get('type', None) == 'doi' and id.get("id", None) is not None:
+            doi.append(id["id"])
+    return ", ".join(doi)
