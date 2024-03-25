@@ -57,9 +57,7 @@ def debug_run():
                         will_deposit = False
                     if dr.metadata_status == "invalidxml" or dr.metadata_status == "payloadtoolarge":
                         will_deposit = False
-                    else:
-                        number_to_deposit += 1
-                else:
+                if will_deposit:
                     number_to_deposit += 1
                 with open(fname2, "a") as f2:
                     f2.write(f"{note.id},{doi},{date_created},{has_deposit_record},{dr_id},{will_deposit}\n")
@@ -105,12 +103,24 @@ def debug_run_for_account(account_id):
                 will_deposit = False
             if dr.metadata_status == "invalidxml" or dr.metadata_status == "payloadtoolarge":
                 will_deposit = False
-            else:
+        if will_deposit:
                 number_to_deposit += 1
-        else:
-            number_to_deposit += 1
         with open(fname2, "a") as f2:
             f2.write(f"{note.id},{doi},{date_created},{has_deposit_record},{dr_id},{will_deposit}\n")
+    row = f"{acc.id}, succeeding, True, {since}, {safe_since}, {number_of_notifications}, {number_to_deposit}\n"
+    return row
+
+def debug_run_for_accounts(account_ids):
+    today = dates.datetime.today().strftime('%Y-%m-%d')
+    path = os.path.join("logs", today)
+    os.makedirs(path, exist_ok=True)
+    fname = os.path.join(path, "debug_deposit.csv")
+    with open(fname, "a") as f:
+        f.write(f"Account id, status, try_deposit, since, safe_since, number_of_notifications, number_to_deposit\n")
+    for account_id in account_ids:
+        row = debug_run_for_account(account_id)
+        with open(fname, "a") as f:
+            f.write(row)
 
 
 def _get_note_doi(note):
