@@ -374,8 +374,7 @@ def process_notification(acc, note, since=None, check_deposit_record=True):
             msg = "No content files to deposit for Notification:{y} on Account:{x}".format(x=acc.id, y=note.id)
             dr.add_message("debug", msg)
             app.logger.debug(msg)
-            if app.config.get("STORE_RESPONSE_DATA", False):
-                dr.save()
+            dr.save()
             # 2018-03-08 TD : return with the new flag (currently 'False' up to here, hopefully!
             return deposit_done, dr.id
 
@@ -387,8 +386,7 @@ def process_notification(acc, note, since=None, check_deposit_record=True):
             msg = "Problem while retrieving content from store for SWORD deposit: {x}".format(x=str(e))
             dr.add_message('error', msg)
             app.logger.error(msg)
-            if app.config.get("STORE_RESPONSE_DATA", False):
-                dr.save()
+            dr.save()
             return deposit_done, dr.id
 
         # make a copy of the tmp store for removing the content later
@@ -416,6 +414,7 @@ def process_notification(acc, note, since=None, check_deposit_record=True):
                 # ensure the content status is set as we expect it
                 dr.metadata_status = dr.content_status = dr.completed_status = "deposited"
                 # 2018-03-08 TD : And we had a lift off...
+                dr.save()
                 deposit_done = True
             except DepositException as e:
                 # save the actual deposit record, ensuring the content_status is set the way
@@ -426,8 +425,7 @@ def process_notification(acc, note, since=None, check_deposit_record=True):
                 dr.completed_status = "failed"
                 if not (dr.metadata_status == "invalidxml" or dr.metadata_status == "payloadtoolarge"):
                     dr.metadata_status = "failed"
-                if app.config.get("STORE_RESPONSE_DATA", False):
-                    dr.save()
+                dr.save()
 
                 # delete the locally stored content
                 tmp.delete(local_id)
@@ -463,8 +461,7 @@ def process_notification(acc, note, since=None, check_deposit_record=True):
             # 2020-01-13 TD : ... and special case 'payloadtoolarge'
             if not dr.metadata_status == "invalidxml" and not dr.metadata_status == "payloadtoolarge":
                 dr.metadata_status = "failed"
-            if app.config.get("STORE_RESPONSE_DATA", False):
-                dr.save()
+            dr.save()
 
             # 2020-01-09 TD : do not kick the exception upstairs but simply return Flag!
             if dr.metadata_status == "invalidxml" or dr.metadata_status == "payloadtoolarge":
@@ -484,8 +481,7 @@ def process_notification(acc, note, since=None, check_deposit_record=True):
             msg = "No content files to deposit for Notification:{y} on Account:{x}".format(x=acc.id, y=note.id)
             dr.add_message('debug', msg)
             app.logger.debug(msg)
-            if app.config.get("STORE_RESPONSE_DATA", False):
-                dr.save()
+            dr.save()
             # 2018-03-08 TD : return with flag
             return deposit_done, dr.id
 
@@ -498,8 +494,7 @@ def process_notification(acc, note, since=None, check_deposit_record=True):
             msg = "Problem while retrieving content from store for SWORD deposit: {x}".format(x=str(e))
             dr.add_message('error', msg)
             app.logger.error(msg)
-            if app.config.get("STORE_RESPONSE_DATA", False):
-                dr.save()
+            dr.save()
             return deposit_done, dr.id
 
         # make a copy of the tmp store for removing the content later
@@ -521,8 +516,7 @@ def process_notification(acc, note, since=None, check_deposit_record=True):
                 app.logger.error("{x} {y}".format(x=msg1, y=msg2))
                 # save the actual deposit record, ensuring the content_status is set the way we expect
                 dr.content_status = "failed"
-                if app.config.get("STORE_RESPONSE_DATA", False):
-                    dr.save()
+                dr.save()
 
                 # delete the locally stored content
                 tmp.delete(local_id)
@@ -548,8 +542,7 @@ def process_notification(acc, note, since=None, check_deposit_record=True):
 
             # save the actual deposit record, ensuring the completed_status is set the way we expect
             dr.completed_status = "failed"
-            if app.config.get("STORE_RESPONSE_DATA", False):
-                dr.save()
+            dr.save()
 
             # kick the exception upstairs for continued handling
             raise e
@@ -558,8 +551,7 @@ def process_notification(acc, note, since=None, check_deposit_record=True):
     #
 
     # that's it, we've successfully deposited this notification to the repository along with all its content
-    if app.config.get("STORE_RESPONSE_DATA", False):
-        dr.save()
+    dr.save()
     app.logger.debug("Leaving processing notification")
     # 2018-03-08 TD : return with (new) flag
     return deposit_done, dr.id
