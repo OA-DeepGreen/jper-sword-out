@@ -423,6 +423,7 @@ def process_notification(acc, note, since=None, check_deposit_record=True):
                 # 2020-01-09 TD : treat special case 'invalidxml' separately
                 # 2020-01-13 TD : ... and special case 'payloadtoolarge'
                 dr.content_status = "failed"
+                dr.completed_status = "failed"
                 if not (dr.metadata_status == "invalidxml" or dr.metadata_status == "payloadtoolarge"):
                     dr.metadata_status = "failed"
                 if app.config.get("STORE_RESPONSE_DATA", False):
@@ -626,6 +627,9 @@ def deepgreen_deposit(packaging, file_handle, acc, deposit_record):
     except Exception as e:
         msg = "There was an error depositing the package to the repository. {a}".format(a=str(e))
         deposit_record.add_message('error', msg)
+        deposit_record.content_status = "failed"
+        deposit_record.metadata_status = "failed"
+        deposit_record.completed_status = "failed"
         app.logger.error("{x}. Raising DepositException".format(x=msg))
         raise DepositException(msg)
 
@@ -636,6 +640,8 @@ def deepgreen_deposit(packaging, file_handle, acc, deposit_record):
     # (recording deposited/failed on the deposit_record along the way)
     if isinstance(ur, sword2.Error_Document):
         deposit_record.content_status = "failed"
+        deposit_record.metadata_status = "failed"
+        deposit_record.completed_status = "failed"
         if not ur.error_href is None:
             if "opus-repository" in ur.error_href and "InvalidXml" in ur.error_href:
                 deposit_record.metadata_status = "invalidxml"
@@ -656,6 +662,8 @@ def deepgreen_deposit(packaging, file_handle, acc, deposit_record):
             sm.store(deposit_record.id, "content_deposit.txt", source_stream=StringIO(msg))
         deposit_record.add_message('info', msg)
         deposit_record.content_status = "deposited"
+        deposit_record.metadata_status = "deposited"
+        deposit_record.completed_status = "deposited"
         app.logger.info(msg)
 
     app.logger.debug("DeepGreen Package deposit")
