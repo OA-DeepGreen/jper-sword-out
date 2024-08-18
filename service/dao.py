@@ -37,7 +37,8 @@ class DepositRecordDAO(dao.ESDAO):
         if len(obs) > 0:
             return obs[0]
 
-    def pull_all_by_ids(cls, notification_id, repository_id):
+    @classmethod
+    def pull_count_by_ids(cls, notification_id, repository_id):
         """
         Get exactly one deposit record back associated with the notification_id and the repository_id
 
@@ -46,7 +47,9 @@ class DepositRecordDAO(dao.ESDAO):
         :return:
         """
         q = DepositRecordQuery(notification_id, repository_id)
-        return cls.pull_all(q, size=1000, return_as_object=False)
+        res = cls.query(q.query())
+        total = res.get('hits', {}).get('total', {}).get('value', 0)
+        return total
 
 
 class DepositRecordQuery(object):

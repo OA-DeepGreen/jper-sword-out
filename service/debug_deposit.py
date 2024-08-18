@@ -56,12 +56,12 @@ def debug_run():
                     if dr.was_successful():
                         will_deposit = False
                     else:
-                        drs = models.DepositRecord.pull_all_by_ids(note.id, acc.id)
-                        if len(drs) >= app.config.get("MAX_DEPOSIT_ATTEMPTS", 10):
+                        dr_count = models.DepositRecord.pull_count_by_ids(note.id, acc.id)
+                        if dr_count >= app.config.get("MAX_DEPOSIT_ATTEMPTS", 10):
                             print("Notification:{y} for Account:{x} has been attempted {z} times - skipping".format(
                                 x=acc.id,
                                 y=note.id,
-                                z=len(drs)))
+                                z=dr_count))
                             will_deposit = False
                     if dr.metadata_status == "invalidxml" or dr.metadata_status == "payloadtoolarge":
                         will_deposit = False
@@ -110,11 +110,11 @@ def debug_run_for_account(account_id):
             if dr.was_successful():
                 will_deposit = False
             else:
-                drs = models.DepositRecord.pull_all_by_ids(note.id, acc.id)
-                if len(drs) >= app.config.get("MAX_DEPOSIT_ATTEMPTS", 10):
+                dr_count = models.DepositRecord.pull_count_by_ids(note.id, acc.id)
+                if dr_count >= app.config.get("MAX_DEPOSIT_ATTEMPTS", 10):
                     print("Notification:{y} for Account:{x} has been attempted {z} times - skipping".format(x=acc.id,
                                                                                                           y=note.id,
-                                                                                                          z=len(drs)))
+                                                                                                          z=dr_count))
                     will_deposit = False
             if dr.metadata_status == "invalidxml" or dr.metadata_status == "payloadtoolarge":
                 will_deposit = False

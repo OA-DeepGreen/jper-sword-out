@@ -323,12 +323,12 @@ def process_notification(acc, note, since=None, check_deposit_record=True):
                 # 2018-03-08 TD : return the new flag with 'False'
                 return deposit_done, dr.id
             else:
-                drs = models.DepositRecord.pull_all_by_ids(note.id, acc.id)
-                if len(drs) >= app.config.get("MAX_DEPOSIT_ATTEMPTS", 10):
+                dr_count = models.DepositRecord.pull_count_by_ids(note.id, acc.id)
+                if dr_count >= app.config.get("MAX_DEPOSIT_ATTEMPTS", 10):
                     app.logger.debug(
                         "Notification:{y} for Account:{x} has been attempted {z} times - skipping".format(x=acc.id,
                                                                                                           y=note.id,
-                                                                                                          z=len(drs)))
+                                                                                                          z=dr_count))
                     # 2018-03-08 TD : return the new flag with 'False'
                     return deposit_done, dr.id
 
