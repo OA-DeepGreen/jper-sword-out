@@ -55,6 +55,14 @@ def debug_run():
                     # was this a successful deposit?  if so, don't re-run
                     if dr.was_successful():
                         will_deposit = False
+                    else:
+                        drs = models.DepositRecord.pull_all_by_ids(note.id, acc.id)
+                        if len(drs) >= app.config.get("MAX_DEPOSIT_ATTEMPTS", 10):
+                            print("Notification:{y} for Account:{x} has been attempted {z} times - skipping".format(
+                                x=acc.id,
+                                y=note.id,
+                                z=len(drs)))
+                            will_deposit = False
                     if dr.metadata_status == "invalidxml" or dr.metadata_status == "payloadtoolarge":
                         will_deposit = False
                 if will_deposit:
@@ -107,14 +115,14 @@ def debug_run_for_account(account_id):
                     print("Notification:{y} for Account:{x} has been attempted {z} times - skipping".format(x=acc.id,
                                                                                                           y=note.id,
                                                                                                           z=len(drs)))
-                    return deposit_done, dr.id
+                    will_deposit = False
             if dr.metadata_status == "invalidxml" or dr.metadata_status == "payloadtoolarge":
                 will_deposit = False
         if will_deposit:
                 number_to_deposit += 1
         with open(fname2, "a") as f2:
             f2.write(f"{note.id},{doi},{date_created},{has_deposit_record},{dr_id},{will_deposit}\n")
-    row = f"{acc.id}, succeeding, True, {since}, {safe_since}, {number_of_notifications}, {number_to_deposit}\n"
+    row = f"{acc.id}, {repository_status.status}, True, {since}, {safe_since}, {number_of_notifications}, {number_to_deposit}\n"
     return row
 
 def debug_run_for_accounts(account_ids):
