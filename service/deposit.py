@@ -36,7 +36,8 @@ def run(fail_on_error=True):
         try:
             process_notification_requests(acc)
         except client.JPERException as e:
-            app.logger.error("Problem while processing deposit requests for account for SWORD deposit: {x}".format(x=str(e)))
+            app.logger.error(
+                "Problem while processing deposit requests for account for SWORD deposit: {x}".format(x=str(e)))
             if fail_on_error:
                 raise e
         try:
@@ -169,7 +170,6 @@ def process_notification_requests(acc):
         repository_status = create_repo_status(acc)
         deposit_log.add_message('debug', "First deposit for account {x}".format(x=acc.id), None, None)
 
-
     deposit_log.add_message('info', "Finding request deposit notifications", None, None)
     deposit_done_count = 0
     # The repository status is recorded after each notification.
@@ -188,7 +188,8 @@ def process_notification_requests(acc):
                                                                                          check_deposit_record,
                                                                                          repository_status,
                                                                                          deposit_log,
-                                                                                         deposit_done_count, request_note=rn)
+                                                                                         deposit_done_count,
+                                                                                         request_note=rn)
             if not status:
                 # the deposit log and repository status are saved at this point
                 return
@@ -321,6 +322,16 @@ def process_notification(acc, note, since=None, check_deposit_record=True):
                     "Notification:{y} for Account:{x} was previously deposited - skipping".format(x=acc.id, y=note.id))
                 # 2018-03-08 TD : return the new flag with 'False'
                 return deposit_done, dr.id
+            else:
+                drs = models.DepositRecord.pull_all_by_ids(note.id, acc.id)
+                if len(drs) >= app.config.get("MAX_DEPOSIT_ATTEMPTS", 10):
+                    app.logger.debug(
+                        "Notification:{y} for Account:{x} has been attempted {z} times - skipping".format(x=acc.id,
+                                                                                                          y=note.id,
+                                                                                                          z=len(drs)))
+                    # 2018-03-08 TD : return the new flag with 'False'
+                    return deposit_done, dr.id
+
             # 2020-01-09 TD : check for a special case 'invalidxml' (induced by a sloppy 
             #                 OPUS4 sword implementation; fixed in v4.7.x or higher)
             # 2020-01-13 TD : ... and special case 'payloadtoolarge'

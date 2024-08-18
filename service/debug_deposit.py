@@ -101,6 +101,13 @@ def debug_run_for_account(account_id):
             # was this a successful deposit?  if so, don't re-run
             if dr.was_successful():
                 will_deposit = False
+            else:
+                drs = models.DepositRecord.pull_all_by_ids(note.id, acc.id)
+                if len(drs) >= app.config.get("MAX_DEPOSIT_ATTEMPTS", 10):
+                    print("Notification:{y} for Account:{x} has been attempted {z} times - skipping".format(x=acc.id,
+                                                                                                          y=note.id,
+                                                                                                          z=len(drs)))
+                    return deposit_done, dr.id
             if dr.metadata_status == "invalidxml" or dr.metadata_status == "payloadtoolarge":
                 will_deposit = False
         if will_deposit:
