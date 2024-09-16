@@ -26,7 +26,7 @@ class DepositRecordDAO(dao.ESDAO):
     @classmethod
     def pull_by_ids(cls, notification_id, repository_id):
         """
-        Get exactly one deposit record back associated with the notification_id and the repository_id
+        Get last updated deposit record associated with the notification_id and the repository_id
 
         :param notification_id:
         :param repository_id:
@@ -40,7 +40,7 @@ class DepositRecordDAO(dao.ESDAO):
     @classmethod
     def pull_count_by_ids(cls, notification_id, repository_id):
         """
-        Get exactly one deposit record back associated with the notification_id and the repository_id
+        Get count of deposit records associated with the notification_id and the repository_id
 
         :param notification_id:
         :param repository_id:
