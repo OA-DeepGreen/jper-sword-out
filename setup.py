@@ -6,7 +6,7 @@ setup(
     packages = find_packages(),
     install_requires = [
         "esprit",
-        "Flask~=3.0",
+        "Flask<3.0", # Matching jper version
         "sword2"
     ],
     url = 'http://cottagelabs.com/',

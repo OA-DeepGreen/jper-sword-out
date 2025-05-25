@@ -2,7 +2,7 @@
 # pip install -r requirements.txt
 # (i.e. target this file with the -r switch on pip).
 
--e git+https://github.com/OA-DeepGreen/esprit.git@590fdfb92957bf4a11dbde32fd9d7e8133fd6165#egg=esprit
+-e git+https://github.com/OA-DeepGreen/esprit.git@9fe39ed736d92194c8c2f1475528ce1748caa91b#egg=esprit
 -e git+https://github.com/OA-DeepGreen/python-client-sword2.git@d4e34842460968d944b4eb1050d3f3bdf0cb577a#egg=sword2
 
 # install octopus (initialise the submodule first)
