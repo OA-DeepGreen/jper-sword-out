@@ -24,7 +24,8 @@ class RequestNotification(dataobj.DataObj, dao.RequestNotification):
                 "account_id": {"coerce" : "unicode"},
                 "notification_id": {"coerce" : "unicode"},
                 "deposit_id": {"coerce" : "unicode"},
-                "status": {"coerce" : "unicode"}
+                "status": {"coerce" : "unicode"},
+                "request_type": {"coerce" : "unicode"},
             }
         }
         self._add_struct(struct)
@@ -96,11 +97,30 @@ class RequestNotification(dataobj.DataObj, dao.RequestNotification):
     @status.setter
     def status(self, val):
         """
-        Set the id of the deposit record associated after it was sent
+        Set the status of the deposit record associated after it was sent
 
-        :param val: the deposit record id
+        :param val: the deposit record status
         """
         self._set_single("status", val, coerce=dataobj.to_unicode(), allowed_values=["queued", "failed", "sent"])
+
+    @property
+    def request_type(self):
+        """
+        Get the request_type of the send notification request
+
+        :return: request_type of the send notification request
+        """
+        return self._get_single("request_type", coerce=dataobj.to_unicode())
+
+    @status.setter
+    def request_type(self, val):
+        """
+        Set the request_type of the deposit record associated after it was sent
+
+        :param val: the deposit record request_type
+        """
+        self._set_single("request_type", val, coerce=dataobj.to_unicode(), allowed_values=["user", "machine"])
+
 
     @classmethod
     def iterate_request_notification(cls, repository_id, status='queued', size=100):
@@ -117,3 +137,4 @@ class RequestNotification(dataobj.DataObj, dao.RequestNotification):
             from_count += size
             if from_count >= total:
                 break
+
