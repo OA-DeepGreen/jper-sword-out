@@ -107,3 +107,6 @@ RUN_THROTTLE = 2
 # whether to store sword response data (receipt, etc).  Recommend only to store during testing operation
 STORE_RESPONSE_DATA = False
 """Whether to store response data or not - set to True if testing"""
+
+# How many deposit attempts to be made in total
+MAX_DEPOSIT_ATTEMPTS = 10
