@@ -151,7 +151,7 @@ def process_account(acc, fail_on_error=True):
     return
 
 
-def process_notification_requests(acc, fail_on_error:True):
+def process_notification_requests(acc, fail_on_error=True):
     """
     Retrieve the notification requests in JPER associated with this account and deposit those notifications
     to the sword-enabled repository
