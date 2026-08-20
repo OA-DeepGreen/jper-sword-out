@@ -45,7 +45,7 @@ if __name__ == "__main__":
     col_counter = 0
     while True:
         app.logger.info("Starting SWORDv2 Runner")
-        deposit.run(fail_on_error=True)
+        deposit.run(fail_on_error=False)
 
         print(".", end=' ')
         sys.stdout.flush()
