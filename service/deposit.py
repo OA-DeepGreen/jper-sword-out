@@ -1,5 +1,5 @@
 """
-Main workflow engine which carries out the mediation between JPER and the SWORD-enabled 
+Main workflow engine which carries out the mediation between JPER and the SWORD-enabled
 repositories
 """
 import sword2, uuid
@@ -11,6 +11,7 @@ from io import BytesIO, StringIO
 from octopus.modules.swordv2 import client_http
 from octopus.core import app
 from octopus.lib import dates
+import time
 
 
 class DepositException(Exception):
@@ -51,12 +52,12 @@ def run(fail_on_error=True):
 
 def process_account(acc):
     """
-    Retrieve the notifications in JPER associated with this account and relay them on 
+    Retrieve the notifications in JPER associated with this account and relay them on
     to their sword-enabled repository
 
     If the account is in status "failing", it will be skipped.
 
-    If the account is in status "problem", and the retry delay has elapsed, it will 
+    If the account is in status "problem", and the retry delay has elapsed, it will
     be re-tried, otherwise it will be skipped
 
     :param acc: the account whose notifications to process
@@ -97,7 +98,7 @@ def process_account(acc):
         since = app.config.get("DEFAULT_SINCE_DATE")
         repository_status.last_deposit_date = since
 
-    # 2018-03-14 TD : introduction of 'safety margin' for since 
+    # 2018-03-14 TD : introduction of 'safety margin' for since
     # add (or, to be precise, substract) a safety period to 'since' aka 'status.last_deposit_date'
     delta_days = app.config.get("DEFAULT_SINCE_DELTA_DAYS")
     safe_since = dates.format(dates.parse(since) - dates.timedelta(days=delta_days))
@@ -120,6 +121,7 @@ def process_account(acc):
                                                                                          repository_status,
                                                                                          deposit_log,
                                                                                          deposit_done_count)
+            time.sleep(1) # Limiting request rate
             if not status:
                 # the deposit log and repository status are saved at this point
                 return
@@ -136,7 +138,7 @@ def process_account(acc):
         deposit_log.save()
         raise e
 
-    # if we get to here, all the notifications for this account have been deposited, 
+    # if we get to here, all the notifications for this account have been deposited,
     # and we can update the status and finish up
     repository_status.save()
     if deposit_done_count > 0:
@@ -280,12 +282,12 @@ def create_repo_status(acc):
 
 def process_notification(acc, note, since=None, check_deposit_record=True):
     """
-    For the given account and notification, deliver the notification to 
+    For the given account and notification, deliver the notification to
     the sword-enabled repository.
 
-    The since date is required to check for duplication of notifications, 
-    this will avoid situations where the granularity of the since date and 
-    the last_deposit_date are too large and there are some processed and 
+    The since date is required to check for duplication of notifications,
+    this will avoid situations where the granularity of the since date and
+    the last_deposit_date are too large and there are some processed and
     some unprocessed notifications all with the same timestamp
 
     :param acc: user account of repository
@@ -303,9 +305,9 @@ def process_notification(acc, note, since=None, check_deposit_record=True):
     # 2018-03-08 TD : new return flag; initialised to 'False'
     deposit_done = False
 
-    # first thing is to check the note for proximity to the since date, and check 
-    # whether we did them already this will avoid situations where the granularity 
-    # of the since date and the last_deposit_date are too large and there are some 
+    # first thing is to check the note for proximity to the since date, and check
+    # whether we did them already this will avoid situations where the granularity
+    # of the since date and the last_deposit_date are too large and there are some
     # processed and some unprocessed notifications all with the same timestamp
     # if note.analysis_date == since:
     # 2018-03-07 TD : this is to match the change in 'process_account(...)' (the caller)
@@ -332,7 +334,7 @@ def process_notification(acc, note, since=None, check_deposit_record=True):
                     # 2018-03-08 TD : return the new flag with 'False'
                     return deposit_done, dr.id
 
-            # 2020-01-09 TD : check for a special case 'invalidxml' (induced by a sloppy 
+            # 2020-01-09 TD : check for a special case 'invalidxml' (induced by a sloppy
             #                 OPUS4 sword implementation; fixed in v4.7.x or higher)
             # 2020-01-13 TD : ... and special case 'payloadtoolarge'
             if dr.metadata_status == "invalidxml" or dr.metadata_status == "payloadtoolarge":
@@ -361,7 +363,7 @@ def process_notification(acc, note, since=None, check_deposit_record=True):
         if link is not None:
             packaging = p
 
-    # pre-populate the content and completed bits of the deposit record, 
+    # pre-populate the content and completed bits of the deposit record,
     # if there is no package to be deposited
     if link is None:
         dr.content_status = "none"
@@ -406,7 +408,7 @@ def process_notification(acc, note, since=None, check_deposit_record=True):
         # adjust some special case(s) for the packaging identification string.
         # Some repositories are really picky about this...
         # 2019-03-05 TD : it turned out that our DSpace test repo only accepts METSDSpaceSIP
-        #                 as packaging string, and sorts out the correct format by itself then 
+        #                 as packaging string, and sorts out the correct format by itself then
         # 2020-02-05 TD : someone seemed to have corrected for the packaging string... dumb.
         #                 to work around just commenting out the workaround, sigh.
         if "opus4" in str(packaging).lower():
@@ -416,8 +418,8 @@ def process_notification(acc, note, since=None, check_deposit_record=True):
         # elif "metsmods" in str(packaging).lower():
         #    packaging = "http://purl.org/net/sword/package/METSDSpaceSIP"
 
-        # now we can do the deposit from the locally stored file 
-        # (which we need because we're going to use seek() on it 
+        # now we can do the deposit from the locally stored file
+        # (which we need because we're going to use seek() on it
         #                  which we can't do with the http stream)
         with open(path, "rb") as f:
             try:
@@ -466,7 +468,7 @@ def process_notification(acc, note, since=None, check_deposit_record=True):
             # 2018-03-08 TD : depositing metadata counts as well!
             deposit_done = True
         except DepositException as e:
-            # save the actual deposit record, ensuring that the metadata_status is set 
+            # save the actual deposit record, ensuring that the metadata_status is set
             # the way we expect
             # 2020-01-09 TD : treat special case 'invalidxml' separately
             # 2020-01-13 TD : ... and special case 'payloadtoolarge'
