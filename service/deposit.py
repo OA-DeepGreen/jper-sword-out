@@ -35,14 +35,14 @@ def run(fail_on_error=True):
     # process each account
     for acc in accs:
         try:
-            process_notification_requests(acc)
+            process_notification_requests(acc, fail_on_error=fail_on_error)
         except client.JPERException as e:
             app.logger.error(
                 "Problem while processing deposit requests for account for SWORD deposit: {x}".format(x=str(e)))
             if fail_on_error:
                 raise e
         try:
-            process_account(acc)
+            process_account(acc, fail_on_error=fail_on_error)
         except client.JPERException as e:
             app.logger.error("Problem while processing account for SWORD deposit: {x}".format(x=str(e)))
             if fail_on_error:
@@ -50,7 +50,7 @@ def run(fail_on_error=True):
     app.logger.info("Leaving run")
 
 
-def process_account(acc):
+def process_account(acc, fail_on_error=True):
     """
     Retrieve the notifications in JPER associated with this account and relay them on
     to their sword-enabled repository
@@ -61,6 +61,7 @@ def process_account(acc):
     be re-tried, otherwise it will be skipped
 
     :param acc: the account whose notifications to process
+    :param fail_on_error: if True, raise an exception if there is a problem processing the account
     """
     app.logger.info("Processing Account:{x}".format(x=acc.id))
     j = client.JPER(api_key=acc.api_key)
@@ -136,7 +137,8 @@ def process_account(acc):
                                     None)
         deposit_log.status = repository_status.status
         deposit_log.save()
-        raise e
+        if fail_on_error:
+            raise e
 
     # if we get to here, all the notifications for this account have been deposited,
     # and we can update the status and finish up
@@ -149,7 +151,7 @@ def process_account(acc):
     return
 
 
-def process_notification_requests(acc):
+def process_notification_requests(acc, fail_on_error=True):
     """
     Retrieve the notification requests in JPER associated with this account and deposit those notifications
     to the sword-enabled repository
@@ -206,7 +208,8 @@ def process_notification_requests(acc):
                                     None)
         deposit_log.status = repository_status.status
         deposit_log.save()
-        raise e
+        if fail_on_error:
+            raise e
 
     # if we get to here, all the notifications for this account have been deposited,
     # and we can update the status and finish up
